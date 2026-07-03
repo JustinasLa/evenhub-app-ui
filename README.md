@@ -149,24 +149,30 @@ The 191 SVGs under [`skills/evenhub-app-ui/assets/icons/`](skills/evenhub-app-ui
 
 ## Test: creating new icons (`evenhub-pixel-icons`)
 
-Ran the `evenhub-pixel-icons` skill end-to-end to create two icons whose metaphors are missing from the bundled 191-icon set. Same workflow both times: sketch on the skill's 16×16 ASCII grid (1 cell = 2×2px), then convert with the bundled `scripts/grid2svg.mjs` for a deterministic, spec-compliant SVG (32×32 viewBox, `#232323` fill, axis-aligned bars only, no strokes/curves).
+Ran the `evenhub-pixel-icons` skill end-to-end to create four custom icon tests. Same workflow each time: sketch on the skill's 16×16 ASCII grid (1 cell = 2×2px), then convert with the bundled `scripts/grid2svg.mjs` for a deterministic, spec-compliant SVG (32×32 viewBox, `#232323` fill, axis-aligned bars only, no strokes/curves). The final coffee cup is an intentionally generated variant; in normal use, the bundled `Coffee shop` icon should be reused because it is already a close match.
 
 <table align="center">
   <tr>
     <td align="center"><img src="icons/custom/Coffee Cup.svg" alt="Coffee Cup pixel icon" width="64" height="64"></td>
     <td align="center"><img src="icons/custom/Cactus.svg" alt="Cactus pixel icon" width="64" height="64"></td>
+    <td align="center"><img src="icons/custom/Dog Face.svg" alt="Dog Face pixel icon" width="64" height="64"></td>
+    <td align="center"><img src="icons/custom/Coffee Cup Codex.svg" alt="Codex Coffee Cup pixel icon" width="64" height="64"></td>
   </tr>
   <tr>
     <td align="center"><a href="icons/custom/Coffee%20Cup.svg"><strong>Coffee Cup</strong></a></td>
     <td align="center"><a href="icons/custom/Cactus.svg"><strong>Cactus</strong></a></td>
+    <td align="center"><a href="icons/custom/Dog%20Face.svg"><strong>Dog Face</strong></a></td>
+    <td align="center"><a href="icons/custom/Coffee%20Cup%20Codex.svg"><strong>Coffee Cup (Codex)</strong></a></td>
   </tr>
   <tr>
     <td align="center">Claude Sonnet 5 · low effort<br>(reasoning effort 20)</td>
     <td align="center">Claude Opus 4.8 · default effort</td>
+    <td align="center">Codex (GPT-5) · default effort</td>
+    <td align="center">Codex (GPT-5) · default effort</td>
   </tr>
 </table>
 
-Both pass the skill's verification checklist: 32×32 viewBox, no `stroke`, no curve commands, all bars/steps in multiples of 2px, single `#232323` fill, 2px padding respected, legible at 24×24.
+All four pass the skill's verification checklist: 32×32 viewBox, no `stroke`, no curve commands, all bars/steps in multiples of 2px, single `#232323` fill, standard padding respected, legible at 24×24.
 
 <details>
 <summary><strong>Coffee Cup — prompt, grid, SVG</strong></summary>
@@ -174,7 +180,7 @@ Both pass the skill's verification checklist: 32×32 viewBox, no `stroke`, no cu
 <br>
 
 **Prompt given to Claude:**
-> Run a test creating a coffee cup icon for even realities. Save the prompt you use and the output to be displayed in README of evenhub-app-ui repo. Mention which model and effort was used to create it.
+> Create a coffee cup icon for even realities.
 
 **Process:** sketched the mug on the ASCII grid — outline body, C-shaped handle, two steam puffs above.
 
@@ -234,7 +240,7 @@ Both pass the skill's verification checklist: 32×32 viewBox, no `stroke`, no cu
 <br>
 
 **Prompt given to Claude:**
-> now do one for a cactus icon, same thing, mention model and etc
+> now do one for a cactus icon
 
 **ASCII grid** — two-armed saguaro in a pot:
 
@@ -290,6 +296,135 @@ Both pass the skill's verification checklist: 32×32 viewBox, no `stroke`, no cu
 <rect x="8" y="26" width="2" height="2" fill="#232323"/>
 <rect x="22" y="26" width="2" height="2" fill="#232323"/>
 <rect x="8" y="28" width="16" height="2" fill="#232323"/>
+</svg>
+```
+
+</details>
+
+<details>
+<summary><strong>Dog Face — prompt, grid, SVG</strong></summary>
+
+<br>
+
+**Prompt given to Codex:**
+> Create a Dog face Icon
+
+**Process:** confirmed the bundled set had no dog, pet, or animal icon; then used the official `Account`, `3D Facial Scan`, and `Good` icons as references for the stepped head silhouette, sparse facial marks, and expression rhythm. The source grid was vertically centered before regeneration, leaving 4px padding above and below.
+
+**ASCII grid:**
+
+```
+................
+................
+..##........##..
+..###......###..
+..#.##....##.#..
+..#..######..#..
+..#..........#..
+..#..##..##..#..
+..#..........#..
+..#....##....#..
+..#...####...#..
+...#...##...#...
+....##....##....
+.....######.....
+................
+................
+```
+
+**Output SVG** — saved at [`icons/custom/Dog Face.svg`](icons/custom/Dog%20Face.svg), with the retained source at [`icons/custom/Dog Face.grid`](icons/custom/Dog%20Face.grid):
+
+```svg
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="4" y="4" width="4" height="2" fill="#232323"/>
+  <rect x="24" y="4" width="4" height="2" fill="#232323"/>
+  <rect x="4" y="6" width="6" height="2" fill="#232323"/>
+  <rect x="22" y="6" width="6" height="2" fill="#232323"/>
+  <rect x="4" y="8" width="2" height="2" fill="#232323"/>
+  <rect x="8" y="8" width="4" height="2" fill="#232323"/>
+  <rect x="20" y="8" width="4" height="2" fill="#232323"/>
+  <rect x="26" y="8" width="2" height="2" fill="#232323"/>
+  <rect x="4" y="10" width="2" height="2" fill="#232323"/>
+  <rect x="10" y="10" width="12" height="2" fill="#232323"/>
+  <rect x="26" y="10" width="2" height="2" fill="#232323"/>
+  <rect x="4" y="12" width="2" height="2" fill="#232323"/>
+  <rect x="26" y="12" width="2" height="2" fill="#232323"/>
+  <rect x="4" y="14" width="2" height="2" fill="#232323"/>
+  <rect x="10" y="14" width="4" height="2" fill="#232323"/>
+  <rect x="18" y="14" width="4" height="2" fill="#232323"/>
+  <rect x="26" y="14" width="2" height="2" fill="#232323"/>
+  <rect x="4" y="16" width="2" height="2" fill="#232323"/>
+  <rect x="26" y="16" width="2" height="2" fill="#232323"/>
+  <rect x="4" y="18" width="2" height="2" fill="#232323"/>
+  <rect x="14" y="18" width="4" height="2" fill="#232323"/>
+  <rect x="26" y="18" width="2" height="2" fill="#232323"/>
+  <rect x="4" y="20" width="2" height="2" fill="#232323"/>
+  <rect x="12" y="20" width="8" height="2" fill="#232323"/>
+  <rect x="26" y="20" width="2" height="2" fill="#232323"/>
+  <rect x="6" y="22" width="2" height="2" fill="#232323"/>
+  <rect x="14" y="22" width="4" height="2" fill="#232323"/>
+  <rect x="24" y="22" width="2" height="2" fill="#232323"/>
+  <rect x="8" y="24" width="4" height="2" fill="#232323"/>
+  <rect x="20" y="24" width="4" height="2" fill="#232323"/>
+  <rect x="10" y="26" width="12" height="2" fill="#232323"/>
+</svg>
+```
+
+</details>
+
+<details>
+<summary><strong>Coffee Cup (Codex) — prompt, grid, SVG</strong></summary>
+
+<br>
+
+**Prompt given to Codex:**
+> Now test the same skill but with a coffee cup
+
+**Process:** The bundled `Coffee shop`, `Restaurant`, and `Hotel` icons informed the sparse stepped geometry. This is a deliberate generation test despite `Coffee shop` already being a reusable official match.
+
+**ASCII grid:**
+
+```
+................
+................
+.......##.......
+......##........
+.......##.......
+................
+...########.....
+...#......###...
+...#......#..#..
+...#......#..#..
+...#......###...
+....#....#......
+.....####.......
+...##########...
+................
+................
+```
+
+**Output SVG** — saved at [`icons/custom/Coffee Cup Codex.svg`](icons/custom/Coffee%20Cup%20Codex.svg), with the retained source at [`icons/custom/Coffee Cup Codex.grid`](icons/custom/Coffee%20Cup%20Codex.grid):
+
+```svg
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="14" y="4" width="4" height="2" fill="#232323"/>
+  <rect x="12" y="6" width="4" height="2" fill="#232323"/>
+  <rect x="14" y="8" width="4" height="2" fill="#232323"/>
+  <rect x="6" y="12" width="16" height="2" fill="#232323"/>
+  <rect x="6" y="14" width="2" height="2" fill="#232323"/>
+  <rect x="20" y="14" width="6" height="2" fill="#232323"/>
+  <rect x="6" y="16" width="2" height="2" fill="#232323"/>
+  <rect x="20" y="16" width="2" height="2" fill="#232323"/>
+  <rect x="26" y="16" width="2" height="2" fill="#232323"/>
+  <rect x="6" y="18" width="2" height="2" fill="#232323"/>
+  <rect x="20" y="18" width="2" height="2" fill="#232323"/>
+  <rect x="26" y="18" width="2" height="2" fill="#232323"/>
+  <rect x="6" y="20" width="2" height="2" fill="#232323"/>
+  <rect x="20" y="20" width="6" height="2" fill="#232323"/>
+  <rect x="8" y="22" width="2" height="2" fill="#232323"/>
+  <rect x="18" y="22" width="2" height="2" fill="#232323"/>
+  <rect x="10" y="24" width="8" height="2" fill="#232323"/>
+  <rect x="6" y="26" width="20" height="2" fill="#232323"/>
 </svg>
 ```
 
