@@ -1,0 +1,20 @@
+{
+  "name": "even-realities-design",
+  "owner": {
+    "name": "JustinasLa",
+    "url": "https://github.com/JustinasLa"
+  },
+  "metadata": {
+    "description": "Marketplace for the even-realities-design skill plugin",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "even-realities-design",
+      "source": "./",
+      "description": "Even Realities G2 design-system skill — APP + OS guidelines (colors, typography, layout, HUD interaction rules) with the official 191-icon pixel SVG set bundled.",
+      "category": "design",
+      "keywords": ["skill", "design-system", "even-realities", "smart-glasses", "icons", "ui"]
+    }
+  ]
+}

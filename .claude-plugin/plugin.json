@@ -1,0 +1,13 @@
+{
+  "name": "even-realities-design",
+  "version": "1.0.0",
+  "description": "Even Realities G2 design-system skill for Claude Code — official color tokens, typography, layout metrics, HUD interaction rules for Even Hub APP and Even OS 2.0, plus the full 191-icon pixel SVG set bundled as assets.",
+  "author": {
+    "name": "JustinasLa",
+    "url": "https://github.com/JustinasLa"
+  },
+  "homepage": "https://github.com/JustinasLa/even-realities-design",
+  "repository": "https://github.com/JustinasLa/even-realities-design",
+  "license": "MIT",
+  "keywords": ["skill", "design-system", "even-realities", "smart-glasses", "icons", "ui"]
+}
