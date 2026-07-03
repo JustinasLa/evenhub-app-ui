@@ -1,0 +1,8 @@
+interface:
+  display_name: "Even Hub Pixel Icons"
+  short_description: "Create custom icons in the Even Hub pixel style"
+  brand_color: "#FEF991"
+  default_prompt: "Use $evenhub-pixel-icons to create a custom Even Hub pixel icon."
+
+policy:
+  allow_implicit_invocation: true

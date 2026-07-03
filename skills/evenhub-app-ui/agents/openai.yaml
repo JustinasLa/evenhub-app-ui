@@ -1,0 +1,8 @@
+interface:
+  display_name: "Even Hub App UI"
+  short_description: "Apply the official Even Hub mobile design system"
+  brand_color: "#FEF991"
+  default_prompt: "Use $evenhub-app-ui to design an Even Hub mobile app screen."
+
+policy:
+  allow_implicit_invocation: true

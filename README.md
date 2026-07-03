@@ -3,19 +3,20 @@
 </p>
 
 <p align="center">
-  Even Realities G2 design system as a Claude Code skill.<br>
+  Even Realities G2 design system for Claude Code and Codex.<br>
   Even Hub APP design guidelines · color tokens · type scale · <strong>191 official pixel icons bundled</strong>.
 </p>
 
 <p align="center">
   <a href="https://docs.anthropic.com/en/docs/claude-code"><img src="https://img.shields.io/badge/works_with-Claude_Code-orange?style=flat" alt="Claude Code"></a>
+  <a href="https://developers.openai.com/codex/"><img src="https://img.shields.io/badge/works_with-Codex-black?style=flat" alt="Codex"></a>
   <a href="https://github.com/JustinasLa/evenhub-app-ui/commits/master"><img src="https://img.shields.io/github/last-commit/JustinasLa/evenhub-app-ui?style=flat" alt="Last commit"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/JustinasLa/evenhub-app-ui?style=flat&cacheSeconds=300" alt="License"></a>
 </p>
 
 ---
 
-evenhub-app-ui is a skill/plugin for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Install once, and whenever you design or build UI for the Even Hub companion app, Claude applies the official design guidelines automatically: exact hex tokens, FK Grotesk Neue typography, margin & spacing metrics, and pixel-icon construction rules.
+evenhub-app-ui is a skill/plugin for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and [Codex](https://developers.openai.com/codex/). Install once, and your coding agent applies the official design guidelines whenever you design or build UI for the Even Hub companion app: exact hex tokens, FK Grotesk Neue typography, margin and spacing metrics, and pixel-icon construction rules.
 
 Distilled from the public Figma file **"Even Realities – Software Design Guidelines"** (UIUX Design Guidelines 2025), APP Guidelines page.
 
@@ -52,6 +53,22 @@ skills/evenhub-pixel-icons/
 ```
 
 ## Install
+
+### Codex
+
+The repository includes a native `.codex-plugin/plugin.json` manifest and
+Codex UI metadata for both bundled skills.
+
+In the Codex app, clone or open this repository, then use **Settings → General
+→ Import other agent setup** and select the plugin when prompted. Start a new
+thread after import. You can invoke the plugin or either skill explicitly with
+`@evenhub-app-ui`, `$evenhub-app-ui`, or `$evenhub-pixel-icons`.
+
+For local marketplace development, add this plugin directory to a Codex
+personal or repository marketplace, restart Codex, then install it from
+`/plugins`.
+
+### Claude Code
 
 **Plugin marketplace. Two commands.**
 

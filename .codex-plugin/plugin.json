@@ -1,0 +1,38 @@
+{
+  "name": "evenhub-app-ui",
+  "version": "1.1.0",
+  "description": "Even Hub mobile app design system with official color, typography, layout, component, and pixel-icon guidance.",
+  "author": {
+    "name": "JustinasLa",
+    "url": "https://github.com/JustinasLa"
+  },
+  "homepage": "https://github.com/JustinasLa/evenhub-app-ui",
+  "repository": "https://github.com/JustinasLa/evenhub-app-ui",
+  "license": "MIT",
+  "keywords": [
+    "design-system",
+    "even-realities",
+    "even-hub",
+    "mobile-ui",
+    "pixel-icons"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Even Hub App UI",
+    "shortDescription": "Design Even Hub mobile UI with official guidance",
+    "longDescription": "Design, implement, and review Even Realities G2 companion-app interfaces with the official color tokens, typography, layout rules, component patterns, and 191 bundled pixel icons.",
+    "developerName": "JustinasLa",
+    "category": "Design",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/JustinasLa/evenhub-app-ui",
+    "brandColor": "#FEF991",
+    "defaultPrompt": [
+      "Design an Even Hub app screen using the official UI system.",
+      "Review this G2 companion-app UI for design-system compliance.",
+      "Find the correct official Even Hub icon for this interface."
+    ]
+  }
+}
