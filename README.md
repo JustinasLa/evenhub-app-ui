@@ -109,17 +109,36 @@ The 191 SVGs under [`skills/evenhub-app-ui/assets/icons/`](skills/evenhub-app-ui
 | Health Feature | 12 | Heart rate, HRV, Sleep, Steps |
 | Menu Bar | 8 | Home/Health/Even hub/Me-Account (+ Highlighted) |
 
-## Test: creating a new icon (`evenhub-pixel-icons`)
+## Test: creating new icons (`evenhub-pixel-icons`)
 
-Ran the `evenhub-pixel-icons` skill end-to-end to create a **Coffee Cup** icon (metaphor missing from the bundled 191-icon set).
+Ran the `evenhub-pixel-icons` skill end-to-end to create two icons whose metaphors are missing from the bundled 191-icon set. Same workflow both times: sketch on the skill's 16×16 ASCII grid (1 cell = 2×2px), then convert with the bundled `scripts/grid2svg.mjs` for a deterministic, spec-compliant SVG (32×32 viewBox, `#232323` fill, axis-aligned bars only, no strokes/curves).
 
-- **Model:** Claude Sonnet 5
-- **Effort:** low (reasoning effort 20)
+<table align="center">
+  <tr>
+    <td align="center"><img src="icons/custom/Coffee Cup.svg" alt="Coffee Cup pixel icon" width="64" height="64"></td>
+    <td align="center"><img src="icons/custom/Cactus.svg" alt="Cactus pixel icon" width="64" height="64"></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="icons/custom/Coffee%20Cup.svg"><strong>Coffee Cup</strong></a></td>
+    <td align="center"><a href="icons/custom/Cactus.svg"><strong>Cactus</strong></a></td>
+  </tr>
+  <tr>
+    <td align="center">Claude Sonnet 5 · low effort<br>(reasoning effort 20)</td>
+    <td align="center">Claude Opus 4.8 · default effort</td>
+  </tr>
+</table>
+
+Both pass the skill's verification checklist: 32×32 viewBox, no `stroke`, no curve commands, all bars/steps in multiples of 2px, single `#232323` fill, 2px padding respected, legible at 24×24.
+
+<details>
+<summary><strong>Coffee Cup — prompt, grid, SVG</strong></summary>
+
+<br>
 
 **Prompt given to Claude:**
 > Run a test creating a coffee cup icon for even realities. Save the prompt you use and the output to be displayed in README of evenhub-app-ui repo. Mention which model and effort was used to create it.
 
-**Process:** sketched the mug on the skill's 16×16 ASCII grid (1 cell = 2×2px) — outline body, C-shaped handle, two steam puffs above — then converted it with the bundled `scripts/grid2svg.mjs` to get a deterministic, spec-compliant SVG (32×32 viewBox, `#232323` fill, axis-aligned bars only, no strokes/curves).
+**Process:** sketched the mug on the ASCII grid — outline body, C-shaped handle, two steam puffs above.
 
 **ASCII grid:**
 
@@ -143,10 +162,6 @@ Ran the `evenhub-pixel-icons` skill end-to-end to create a **Coffee Cup** icon (
 ```
 
 **Output SVG** — saved at [`icons/custom/Coffee Cup.svg`](icons/custom/Coffee%20Cup.svg):
-
-<p align="left">
-  <img src="icons/custom/Coffee Cup.svg" alt="Coffee Cup pixel icon" width="64" height="64">
-</p>
 
 ```svg
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -173,14 +188,12 @@ Ran the `evenhub-pixel-icons` skill end-to-end to create a **Coffee Cup** icon (
 </svg>
 ```
 
-Passes the skill's verification checklist: 32×32 viewBox, no `stroke`, no curve commands, all bars/steps in multiples of 2px, single `#232323` fill, 2px padding respected, legible at 24×24.
+</details>
 
-### Second run — Cactus
+<details>
+<summary><strong>Cactus — prompt, grid, SVG</strong></summary>
 
-Same skill, same workflow, run a second time to create a **Cactus** icon (also missing from the bundled set).
-
-- **Model:** Claude Opus 4.8
-- **Effort:** default
+<br>
 
 **Prompt given to Claude:**
 > now do one for a cactus icon, same thing, mention model and etc
@@ -207,10 +220,6 @@ Same skill, same workflow, run a second time to create a **Cactus** icon (also m
 ```
 
 **Output SVG** — saved at [`icons/custom/Cactus.svg`](icons/custom/Cactus.svg):
-
-<p align="left">
-  <img src="icons/custom/Cactus.svg" alt="Cactus pixel icon" width="64" height="64">
-</p>
 
 ```svg
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -246,7 +255,7 @@ Same skill, same workflow, run a second time to create a **Cactus** icon (also m
 </svg>
 ```
 
-Passes the same checklist: 32×32 viewBox, no `stroke`, no curve commands, all bars/steps in multiples of 2px, single `#232323` fill, 2px padding respected, legible at 24×24.
+</details>
 
 ## Credits & license
 
