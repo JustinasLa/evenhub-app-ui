@@ -1,69 +1,104 @@
 ---
 name: evenhub-pixel-icons
 description: >-
-  Create NEW pixel-style icons that match the official Even Realities /
-  Even Hub icon set when no bundled icon fits. Use when asked to design,
-  draw, generate, or make a custom icon for an Even Hub app, Even Realities
-  G2 companion app, or anything needing the Even pixel-icon aesthetic —
-  e.g. "make a coffee icon in the Even style", "we need a WiFi icon, the
-  set has none", "create a pixel icon for X". Always check the 191 bundled
-  SVGs in the evenhub-app-ui skill first; only create when the metaphor is
-  missing. For using existing icons, colors, or layout, use evenhub-app-ui.
+  Create custom pixel-style SVG icons matching the official Even Realities
+  Even Hub visual language when the bundled icon set has no suitable metaphor.
+  Use when asked to design, draw, generate, or refine an icon for an Even Hub
+  app, Even Realities G2 companion app, or the Even pixel-icon aesthetic.
+  First search the 191 bundled icons in the sibling evenhub-app-ui skill; use
+  that skill instead when an existing icon, UI token, or layout is sufficient.
 ---
 
-# Even Hub pixel-icon creation
+# Create Even Hub pixel icons
 
-Create new icons indistinguishable in style from the official 191-icon set bundled in the sibling skill (`../evenhub-app-ui/assets/icons/`).
+Create new icons that belong beside the official set without altering the
+official assets.
 
-## Step 0 — don't create what already exists
+## Workflow
 
-Check the bundled inventory first (`../evenhub-app-ui/references/iconography.md`, "Bundled SVG inventory"). If a bundled icon covers the metaphor — even loosely — use it verbatim instead of creating a new one. Only proceed when the metaphor is genuinely missing (e.g. WiFi, Coffee, Microphone).
+### 1. Reuse before drawing
 
-## Anatomy of an authentic icon (reverse-engineered from the real set)
+Search `../evenhub-app-ui/references/iconography.md` and
+`../evenhub-app-ui/assets/icons/` by name and related concepts. Use an existing
+icon verbatim when its metaphor is close enough.
 
-Every official SVG follows this exact structure:
+When no icon fits:
 
-```svg
-<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="…" fill="#232323"/>
-</svg>
-```
+1. Inspect two or three official icons with similar semantics or geometry.
+2. Identify the shared silhouette, density, and outline/filled treatment.
+3. Choose one unmistakable metaphor and remove decorative detail.
 
-- **Canvas:** `viewBox="0 0 32 32"`, root `fill="none"`.
-- **Geometry:** one flattened `<path>` (or plain `<rect>`s) — **horizontal/vertical edges only**. Path `d` uses only `M H V L Z` with axis-aligned `L`. **Never** `C`, `Q`, `A`, `S`, `T` — no curves, no arcs, ever.
-- **Line weight:** strokes are drawn as **2px-wide filled bars** (e.g. `<rect width="2" height="10">`). No `stroke` attributes anywhere — everything is fill.
-- **Pixel unit:** 2×2px. Every coordinate is an **integer**; every bar is 2px thick; steps/corners move in 2px increments. (Some official files carry Figma export noise like `11.999` — do not reproduce that; use clean integers.)
-- **Color:** single fill `#232323` (TC1 light). Dark mode = recolor to `#EEEEEE` at render time via CSS; never bake other colors in.
-- **Corners:** pixelated. Diagonals are 2×2 stair-steps (see Checkmark.svg: repeated 2×2 squares each offset by ±2 in x and y). No rounding, no anti-alias tricks.
-- **Style variants:** default icons are **outlined** (2px bars forming shapes); only "Highlighted" menu-bar variants are solid-filled.
+Do not combine several weak metaphors into one busy icon.
 
-## Construction rules (official guidelines)
+### 2. Design on the source grid
 
-- 32×32 grid, **2px padding** on all sides (content lives in 28×28; may break padding only when the metaphor needs it — never put the majority of the icon in the padding).
-- Keep the metaphor as simple as possible — fewest elements that stay legible at 24×24.
-- Don't pack elements closer than 2px apart.
-- Deliberate empty pixels and stepped corners are part of the look.
-- Icons render at **24×24** in UI (or integer multiples of the grid).
+Sketch a 16×16 ASCII grid where each cell becomes a 2×2 px block:
 
-## Method: grid-first, then SVG
+- `#` = filled
+- `.` = empty
+- Keep the outer row and column empty for the standard 2 px padding.
+- Use one-cell bars and one-cell stair steps as the default visual rhythm.
+- Keep separate elements at least one cell apart.
+- Prefer balanced optical weight over forced geometric symmetry.
 
-Design on a **16×16 cell grid** where 1 cell = 2×2px. Never freehand path coordinates.
+Break the outer padding only when a closely related official icon does so and
+the metaphor requires the extra span.
 
-1. Sketch the icon as an ASCII grid — 16 rows × 16 cols, `#` = filled cell, `.` = empty. Rows 0 and 15 and cols 0 and 15 stay empty (the 2px padding).
-2. Review the sketch: is the metaphor readable? corners stepped? lines 1 cell (2px) thick? padding respected?
-3. Convert to SVG with the bundled script (deterministic, merges horizontal runs into bars):
+Review the grid at its intended 24×24 display size. If a detail is unclear
+there, simplify it rather than adding pixels.
+
+### 3. Generate the SVG
+
+Run the bundled generator by resolving it from this skill directory:
 
 ```bash
-node scripts/grid2svg.mjs icon.grid > "New Icon.svg"
+node <skill-dir>/scripts/grid2svg.mjs icon.grid --output "Icon Name.svg"
 ```
 
-where `icon.grid` is the 16-line ASCII sketch. The script rejects malformed grids (wrong size, stray characters).
+The generator validates grid dimensions, characters, padding, and empty input.
+For a justified edge-to-edge design, pass `--allow-edge`.
 
-4. Show the user the ASCII sketch alongside the SVG so they can judge the shape before it lands in the codebase.
+Do not hand-edit generated coordinates. Revise the grid and regenerate so the
+source remains reviewable and every value stays on the 2 px grid.
 
-### Example — diagonal (Checkmark-style stair-step)
+### 4. Present and place
 
-```
+Show the ASCII grid with the resulting SVG or preview. State which official
+icons informed the design. If the user requests revisions, edit the grid first.
+
+Store new work in the consuming project, normally under `icons/custom/`.
+Never add custom icons to `../evenhub-app-ui/assets/icons/`; that directory is
+the untouched official Figma export.
+
+## Style constraints
+
+- Canvas: `32×32`, `viewBox="0 0 32 32"`, displayed at `24×24`.
+- Geometry: axis-aligned 2 px blocks and stepped diagonals.
+- Output: filled geometry only; no `stroke`, curves, arcs, masks, or filters.
+- Coordinates and dimensions: even integers generated from the grid.
+- Color: one fill, `#232323`. Recolor for dark mode at render time.
+- Detail: use the fewest elements that remain recognizable.
+- Filename: Title Case with spaces, for example `Coffee Cup.svg`.
+
+Official Figma exports contain occasional fractional coordinates, clipping
+groups, and a 33 px artboard exception. Treat those as source-export artifacts,
+not patterns for new icons.
+
+## Delivery checks
+
+Before delivery, verify:
+
+- the requested concept is not already bundled;
+- the grid is retained or shown for review;
+- standard padding is respected, or the exception is explained;
+- the icon is recognizable at 24×24;
+- the SVG contains no `stroke` or curved path commands;
+- geometry stays on the 2 px grid and uses only `#232323`;
+- the file is placed outside the official asset directory.
+
+## Minimal stepped-diagonal example
+
+```text
 ................
 ................
 ................
@@ -81,17 +116,3 @@ where `icon.grid` is the 16-line ASCII sketch. The script rejects malformed grid
 ................
 ................
 ```
-
-## Verification checklist (run before delivering)
-
-- [ ] `viewBox="0 0 32 32"`, no `stroke` attribute anywhere
-- [ ] `d` contains no `C/Q/A/S/T` commands; all coordinates integers
-- [ ] every bar thickness and step is a multiple of 2
-- [ ] single fill color `#232323`
-- [ ] content respects 2px padding (nothing at x/y 0–1 or 30–31 without reason)
-- [ ] legible at 24×24 — mentally (or actually) render small; if detail mushes, simplify
-- [ ] filename matches the set's convention: Title Case with spaces (`Coffee Cup.svg`), placed in the most fitting category folder if adding to a project's icon dir
-
-## Naming & placement
-
-New icons belong to the consuming project, **not** to the bundled `assets/icons/` set (that set mirrors the official Figma export — keep it pristine). Suggest the project store custom icons in its own `icons/custom/` directory.

@@ -1,63 +1,124 @@
 #!/usr/bin/env node
-// grid2svg — convert a 16x16 ASCII cell grid ('#' filled, '.' empty) into an
-// Even Realities-style pixel icon SVG (32x32, 2x2px unit, #232323 fill).
-//
-// Usage: node grid2svg.mjs icon.grid > "Icon Name.svg"
 
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 
-const SIZE = 16; // cells per side
-const UNIT = 2; // px per cell
+const SIZE = 16;
+const UNIT = 2;
 const FILL = "#232323";
 
-const file = process.argv[2];
-if (!file) {
-  console.error("usage: node grid2svg.mjs <gridfile>");
+function usage() {
+  console.error(
+    "usage: node grid2svg.mjs <input.grid> [--output <icon.svg>] [--allow-edge]",
+  );
+}
+
+function exitWith(message) {
+  console.error(`error: ${message}`);
   process.exit(1);
 }
 
-const lines = readFileSync(file, "utf8")
-  .split(/\r?\n/)
-  .filter((l) => l.length > 0);
+const args = process.argv.slice(2);
+if (args.includes("--help") || args.includes("-h")) {
+  usage();
+  process.exit(0);
+}
+
+let input;
+let output;
+let allowEdge = false;
+
+for (let index = 0; index < args.length; index++) {
+  const argument = args[index];
+  if (argument === "--allow-edge") {
+    allowEdge = true;
+  } else if (argument === "--output" || argument === "-o") {
+    output = args[++index];
+    if (!output) exitWith(`${argument} requires a file path`);
+  } else if (argument.startsWith("-")) {
+    exitWith(`unknown option: ${argument}`);
+  } else if (input) {
+    exitWith(`unexpected argument: ${argument}`);
+  } else {
+    input = argument;
+  }
+}
+
+if (!input) {
+  usage();
+  process.exit(1);
+}
+
+let source;
+try {
+  source = readFileSync(input, "utf8");
+} catch (error) {
+  exitWith(`cannot read ${input}: ${error.message}`);
+}
+
+// Remove terminal newlines only. Blank rows inside the grid remain invalid.
+const lines = source.replace(/(?:\r?\n)+$/, "").split(/\r?\n/);
 
 if (lines.length !== SIZE) {
-  console.error(`grid must have ${SIZE} non-empty lines, got ${lines.length}`);
-  process.exit(1);
+  exitWith(`grid must have ${SIZE} rows; found ${lines.length}`);
 }
-for (const [i, l] of lines.entries()) {
-  if (l.length !== SIZE || /[^#.]/.test(l)) {
-    console.error(`line ${i + 1} must be exactly ${SIZE} chars of '#' or '.': "${l}"`);
-    process.exit(1);
+
+for (const [index, line] of lines.entries()) {
+  if (line.length !== SIZE) {
+    exitWith(`row ${index + 1} must have ${SIZE} cells; found ${line.length}`);
+  }
+  if (/[^#.]/.test(line)) {
+    exitWith(`row ${index + 1} contains characters other than "#" and "."`);
   }
 }
 
-// Merge horizontal runs of filled cells into 2px-tall bars.
+if (!lines.some((line) => line.includes("#"))) {
+  exitWith("grid is empty");
+}
+
+if (!allowEdge) {
+  const touchesEdge =
+    lines[0].includes("#") ||
+    lines[SIZE - 1].includes("#") ||
+    lines.some((line) => line[0] === "#" || line[SIZE - 1] === "#");
+  if (touchesEdge) {
+    exitWith("filled cells touch the outer edge; revise or pass --allow-edge");
+  }
+}
+
 const rects = [];
 for (let row = 0; row < SIZE; row++) {
-  let col = 0;
-  while (col < SIZE) {
-    if (lines[row][col] === "#") {
-      let run = 0;
-      while (col + run < SIZE && lines[row][col + run] === "#") run++;
-      rects.push(
-        `<rect x="${col * UNIT}" y="${row * UNIT}" width="${run * UNIT}" height="${UNIT}" fill="${FILL}"/>`
-      );
-      col += run;
-    } else {
-      col++;
+  for (let column = 0; column < SIZE; ) {
+    if (lines[row][column] !== "#") {
+      column++;
+      continue;
     }
-  }
-}
 
-if (rects.length === 0) {
-  console.error("grid is empty — nothing to draw");
-  process.exit(1);
+    let width = 1;
+    while (column + width < SIZE && lines[row][column + width] === "#") {
+      width++;
+    }
+
+    rects.push(
+      `  <rect x="${column * UNIT}" y="${row * UNIT}" width="${width * UNIT}" height="${UNIT}" fill="${FILL}"/>`,
+    );
+    column += width;
+  }
 }
 
 const svg = [
-  `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">`,
+  '<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">',
   ...rects,
-  `</svg>`,
+  "</svg>",
+  "",
 ].join("\n");
 
-console.log(svg);
+if (output) {
+  try {
+    writeFileSync(output, svg, "utf8");
+  } catch (error) {
+    exitWith(`cannot write ${output}: ${error.message}`);
+  }
+  console.log(`wrote ${output} (${rects.length} rectangles)`);
+} else {
+  process.stdout.write(svg);
+}
