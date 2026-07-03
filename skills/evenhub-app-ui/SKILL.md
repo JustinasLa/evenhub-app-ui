@@ -2,10 +2,15 @@
 name: evenhub-app-ui
 description: >-
   Design-system guidance for the Even Hub companion APP (mobile) for Even
-  Realities G2 smart glasses. Use when designing or reviewing APP UI — colors,
-  typography, iconography, layout/spacing, components — or when the official
-  pixel-icon SVG assets are needed. For the glasses HUD (Even OS) design
-  guidelines, use the everything-evenhub plugin instead.
+  Realities G2 smart glasses. Use when designing, building, or reviewing UI
+  for the Even Hub app, an Even Realities companion/mobile app, or a G2
+  phone app — colors and hex tokens, typography (FK Grotesk), iconography,
+  layout/spacing/margins, components — or when official Even Realities
+  pixel icons / pixel-art SVG assets are needed (battery, Bluetooth,
+  glasses, menu bar, feature icons). Triggers: "Even Hub app", "Even
+  Realities app UI", "G2 companion app", "Even Hub screen/settings/design",
+  "Even Realities icon". For the glasses HUD (Even OS 576x288 display),
+  use the everything-evenhub plugin instead.
 ---
 
 # Even Hub APP Design Guidelines
