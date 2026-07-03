@@ -109,6 +109,145 @@ The 191 SVGs under [`skills/evenhub-app-ui/assets/icons/`](skills/evenhub-app-ui
 | Health Feature | 12 | Heart rate, HRV, Sleep, Steps |
 | Menu Bar | 8 | Home/Health/Even hub/Me-Account (+ Highlighted) |
 
+## Test: creating a new icon (`evenhub-pixel-icons`)
+
+Ran the `evenhub-pixel-icons` skill end-to-end to create a **Coffee Cup** icon (metaphor missing from the bundled 191-icon set).
+
+- **Model:** Claude Sonnet 5
+- **Effort:** low (reasoning effort 20)
+
+**Prompt given to Claude:**
+> Run a test creating a coffee cup icon for even realities. Save the prompt you use and the output to be displayed in README of evenhub-app-ui repo. Mention which model and effort was used to create it.
+
+**Process:** sketched the mug on the skill's 16×16 ASCII grid (1 cell = 2×2px) — outline body, C-shaped handle, two steam puffs above — then converted it with the bundled `scripts/grid2svg.mjs` to get a deterministic, spec-compliant SVG (32×32 viewBox, `#232323` fill, axis-aligned bars only, no strokes/curves).
+
+**ASCII grid:**
+
+```
+................
+................
+......#..#......
+......#..#......
+................
+................
+....#######.....
+....#.....#.....
+....#.....###...
+....#.....#.#...
+....#.....#.#...
+....#.....###...
+....#.....#.....
+....#######.....
+................
+................
+```
+
+**Output SVG** — saved at [`icons/custom/Coffee Cup.svg`](icons/custom/Coffee%20Cup.svg):
+
+<p align="left">
+  <img src="icons/custom/Coffee Cup.svg" alt="Coffee Cup pixel icon" width="64" height="64">
+</p>
+
+```svg
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="12" y="4" width="2" height="2" fill="#232323"/>
+<rect x="18" y="4" width="2" height="2" fill="#232323"/>
+<rect x="12" y="6" width="2" height="2" fill="#232323"/>
+<rect x="18" y="6" width="2" height="2" fill="#232323"/>
+<rect x="8" y="12" width="14" height="2" fill="#232323"/>
+<rect x="8" y="14" width="2" height="2" fill="#232323"/>
+<rect x="20" y="14" width="2" height="2" fill="#232323"/>
+<rect x="8" y="16" width="2" height="2" fill="#232323"/>
+<rect x="20" y="16" width="6" height="2" fill="#232323"/>
+<rect x="8" y="18" width="2" height="2" fill="#232323"/>
+<rect x="20" y="18" width="2" height="2" fill="#232323"/>
+<rect x="24" y="18" width="2" height="2" fill="#232323"/>
+<rect x="8" y="20" width="2" height="2" fill="#232323"/>
+<rect x="20" y="20" width="2" height="2" fill="#232323"/>
+<rect x="24" y="20" width="2" height="2" fill="#232323"/>
+<rect x="8" y="22" width="2" height="2" fill="#232323"/>
+<rect x="20" y="22" width="6" height="2" fill="#232323"/>
+<rect x="8" y="24" width="2" height="2" fill="#232323"/>
+<rect x="20" y="24" width="2" height="2" fill="#232323"/>
+<rect x="8" y="26" width="14" height="2" fill="#232323"/>
+</svg>
+```
+
+Passes the skill's verification checklist: 32×32 viewBox, no `stroke`, no curve commands, all bars/steps in multiples of 2px, single `#232323` fill, 2px padding respected, legible at 24×24.
+
+### Second run — Cactus
+
+Same skill, same workflow, run a second time to create a **Cactus** icon (also missing from the bundled set).
+
+- **Model:** Claude Opus 4.8
+- **Effort:** default
+
+**Prompt given to Claude:**
+> now do one for a cactus icon, same thing, mention model and etc
+
+**ASCII grid** — two-armed saguaro in a pot:
+
+```
+................
+................
+......####......
+......#..#......
+......#..####...
+...####..#..#...
+...#..#..#..#...
+...#..#..#..#...
+...#..#..####...
+...####..#......
+......#..#......
+......#..#......
+....########....
+....#......#....
+....########....
+................
+```
+
+**Output SVG** — saved at [`icons/custom/Cactus.svg`](icons/custom/Cactus.svg):
+
+<p align="left">
+  <img src="icons/custom/Cactus.svg" alt="Cactus pixel icon" width="64" height="64">
+</p>
+
+```svg
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="12" y="4" width="8" height="2" fill="#232323"/>
+<rect x="12" y="6" width="2" height="2" fill="#232323"/>
+<rect x="18" y="6" width="2" height="2" fill="#232323"/>
+<rect x="12" y="8" width="2" height="2" fill="#232323"/>
+<rect x="18" y="8" width="8" height="2" fill="#232323"/>
+<rect x="6" y="10" width="8" height="2" fill="#232323"/>
+<rect x="18" y="10" width="2" height="2" fill="#232323"/>
+<rect x="24" y="10" width="2" height="2" fill="#232323"/>
+<rect x="6" y="12" width="2" height="2" fill="#232323"/>
+<rect x="12" y="12" width="2" height="2" fill="#232323"/>
+<rect x="18" y="12" width="2" height="2" fill="#232323"/>
+<rect x="24" y="12" width="2" height="2" fill="#232323"/>
+<rect x="6" y="14" width="2" height="2" fill="#232323"/>
+<rect x="12" y="14" width="2" height="2" fill="#232323"/>
+<rect x="18" y="14" width="2" height="2" fill="#232323"/>
+<rect x="24" y="14" width="2" height="2" fill="#232323"/>
+<rect x="6" y="16" width="2" height="2" fill="#232323"/>
+<rect x="12" y="16" width="2" height="2" fill="#232323"/>
+<rect x="18" y="16" width="8" height="2" fill="#232323"/>
+<rect x="6" y="18" width="8" height="2" fill="#232323"/>
+<rect x="18" y="18" width="2" height="2" fill="#232323"/>
+<rect x="12" y="20" width="2" height="2" fill="#232323"/>
+<rect x="18" y="20" width="2" height="2" fill="#232323"/>
+<rect x="12" y="22" width="2" height="2" fill="#232323"/>
+<rect x="18" y="22" width="2" height="2" fill="#232323"/>
+<rect x="8" y="24" width="16" height="2" fill="#232323"/>
+<rect x="8" y="26" width="2" height="2" fill="#232323"/>
+<rect x="22" y="26" width="2" height="2" fill="#232323"/>
+<rect x="8" y="28" width="16" height="2" fill="#232323"/>
+</svg>
+```
+
+Passes the same checklist: 32×32 viewBox, no `stroke`, no curve commands, all bars/steps in multiples of 2px, single `#232323` fill, 2px padding respected, legible at 24×24.
+
 ## Credits & license
 
 Design guidelines and icon artwork © [Even Realities](https://www.evenrealities.com) — published by them as a public Figma resource for developers building on G2. This repo repackages that public resource for Claude Code workflows; not affiliated with or endorsed by Even Realities.
