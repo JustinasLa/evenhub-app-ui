@@ -42,6 +42,12 @@ skills/evenhub-app-ui/
   assets/icons/                   191 official SVGs in 7 categories:
                                   Menu Bar · Feature & Function · Edit & Settings ·
                                   Guide System · Health · Navigate · Status
+
+skills/evenhub-pixel-icons/
+  SKILL.md                        create NEW icons in the official pixel style when
+                                  the bundled set lacks the metaphor — authentic SVG
+                                  anatomy, grid-first workflow, verification checklist
+  scripts/grid2svg.mjs            deterministic ASCII-grid → pixel-icon SVG converter
 ```
 
 ## Install
@@ -87,6 +93,7 @@ Typical asks it improves:
 
 - "Build the settings screen for our G2 companion app" → correct tokens (#232323 / #EEEEEE / #FEF991…), 12px screen margins, 6px squircle cards, FK type scale.
 - "Need a battery icon" → uses the bundled `Status Icons/Battery_Low.svg` instead of inventing one.
+- "Need a WiFi icon and the set has none" → the `evenhub-pixel-icons` skill kicks in and draws a new SVG that matches the official style (32×32 grid, 2×2px unit, stepped corners, `#232323` fill).
 
 ## Icon set
 

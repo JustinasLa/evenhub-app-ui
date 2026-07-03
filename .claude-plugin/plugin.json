@@ -1,6 +1,6 @@
 {
   "name": "evenhub-app-ui",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Even Hub APP design-system skill for Claude Code — official color tokens, FK Grotesk Neue type scale, layout metrics, and component patterns for the Even Realities G2 companion app, plus the full 191-icon pixel SVG set bundled as assets.",
   "author": {
     "name": "JustinasLa",
