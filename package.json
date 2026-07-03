@@ -1,0 +1,25 @@
+{
+  "name": "evenhub-app-ui",
+  "version": "1.1.0",
+  "description": "Even Hub mobile app design system and pixel icons for AI coding agents",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JustinasLa/evenhub-app-ui.git"
+  },
+  "bin": {
+    "install-evenhub-app-ui": "./bin/install.js"
+  },
+  "files": [
+    ".claude-plugin/",
+    ".codex-plugin/",
+    "bin/",
+    "skills/",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

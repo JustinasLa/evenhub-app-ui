@@ -54,6 +54,26 @@ skills/evenhub-pixel-icons/
 
 ## Install
 
+### One command — all detected agents
+
+Requires Node.js 18 or newer. The installer detects supported agents, installs
+both skills globally, and skips agents that are not present.
+
+```bash
+# macOS · Linux · WSL · Git Bash
+curl -fsSL https://raw.githubusercontent.com/JustinasLa/evenhub-app-ui/master/install.sh | bash
+```
+
+```powershell
+# Windows · PowerShell 5.1+
+irm https://raw.githubusercontent.com/JustinasLa/evenhub-app-ui/master/install.ps1 | iex
+```
+
+Preview first with `--dry-run`, inspect detection with `--list`, or target one
+agent with `--only codex` or `--only claude-code`. The installer is safe to
+re-run; use `--force` to replace existing copies and `--uninstall` to remove
+both skills.
+
 ### Codex
 
 The repository includes a native `.codex-plugin/plugin.json` manifest and
