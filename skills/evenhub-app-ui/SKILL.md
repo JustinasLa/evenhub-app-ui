@@ -1,57 +1,91 @@
 ---
 name: evenhub-app-ui
 description: >-
-  Design-system guidance for the Even Hub companion APP (mobile) for Even
-  Realities G2 smart glasses. Use when designing, building, or reviewing UI
-  for the Even Hub app, an Even Realities companion/mobile app, or a G2
-  phone app — colors and hex tokens, typography (FK Grotesk), iconography,
-  layout/spacing/margins, components — or when official Even Realities
-  pixel icons / pixel-art SVG assets are needed (battery, Bluetooth,
-  glasses, menu bar, feature icons). Triggers: "Even Hub app", "Even
-  Realities app UI", "G2 companion app", "Even Hub screen/settings/design",
-  "Even Realities icon". For the glasses HUD (Even OS 576x288 display),
-  use the everything-evenhub plugin instead.
+  Design, implement, or review mobile companion-app UI using the official Even
+  Hub design system for Even Realities G2. Use for Even Hub screens, settings,
+  components, colors, typography, spacing, cards, navigation, or when selecting
+  official Even Realities pixel-icon SVGs. Apply only to the phone app, not the
+  576x288 glasses HUD; use everything-evenhub for Even OS display experiences.
+  Use evenhub-pixel-icons only when no bundled icon fits.
 ---
 
-# Even Hub APP Design Guidelines
+# Apply the Even Hub app design system
 
-Source: official public Figma "Even Realities - Software Design Guidelines" (UIUX Design Guidelines 2025), APP Guidelines page.
+Use this skill for the mobile companion app only. Do not apply its layout,
+typography, or components to the Even OS glasses display.
 
-**Scope: the phone companion app only** (light/dark mode, standard mobile UI). Glasses HUD (Even OS) design guidelines are covered by the `everything-evenhub` plugin (`everything-evenhub:design-guidelines`) — defer to it for the 576×288 canvas, HUD layout, and glasses interaction rules.
+The guidance is distilled from the public Figma file “Even Realities – Software
+Design Guidelines” (UIUX Design Guidelines 2025), APP Guidelines page.
 
-## Quick facts (memorize)
+## Route the task
 
-| Topic | APP |
-|---|---|
-| Font | FK Grotesk Neue |
-| Screen margin | 12px both sides (16px inside cards) |
-| Corner radius | 6px + 60% corner smoothing (squircle) |
-| Icon artboard | 32×32px, 2px padding, 2×2px pixel unit, ship at 24×24 |
+Load only the reference needed:
 
-## Reference files (read as needed)
+- Read `references/app-guidelines.md` before designing, implementing, or
+  reviewing screens and components. It defines colors, type, spacing, radii,
+  and component patterns.
+- Read `references/iconography.md` before selecting or placing icons. It maps
+  common UI symbols and inventories all bundled assets.
+- Use both references for complete screen work.
+- Use the sibling `evenhub-pixel-icons` skill only after confirming that no
+  bundled icon expresses the requested metaphor.
+- Defer glasses-HUD work to `everything-evenhub:design-guidelines`.
 
-- `references/app-guidelines.md` — APP color tokens (TC/BC/SC), full type scale, margins, spacing, padding, radius, component/template inventory.
-- `references/iconography.md` — how icons are constructed (grid, key-shapes, do's/don'ts) plus the full inventory of the 191 bundled SVG assets.
+## Implement in this order
 
-## Bundled icon assets
+1. Establish the screen hierarchy and choose patterns from the component
+   inventory; do not invent a new component when an official pattern fits.
+2. Apply semantic color tokens instead of choosing approximate grays or accent
+   colors.
+3. Apply the FK Grotesk Neue type role that matches each element.
+4. Set the 12 px screen margin, 16 px card inset, 6 px card radius, and the
+   documented 0/6/12/24 px spacing rhythm.
+5. Select official SVGs from `assets/icons/` and preserve their geometry.
+6. Verify hierarchy, state contrast, spacing, and icon usage at the target
+   mobile viewport.
 
-The official icon set (191 SVGs, extracted from the APP section of the Figma file) ships with this skill under `assets/icons/`, organized in the same seven categories as the design file:
+When FK Grotesk Neue is unavailable, state the fallback explicitly rather than
+silently presenting another font as exact.
 
-```
-assets/icons/
-  Edit & Settings Icons/   (32)
-  Feature & Function Icons/(41)
-  Guide System/            (20)
-  Health Feature Icon/     (12)
-  Menu Bar Icons/          (8, incl. -Highlighted variants)
-  Navigate Feature Icon/   (23)
-  Status Icons/            (55)
-```
+## Core constraints
 
-When implementing UI, prefer these SVGs verbatim rather than redrawing or substituting a generic icon library — the pixel-grid style is part of the brand. File names are human-readable (e.g. `Status Icons/Battery_Low.svg`, `Guide System/Chevron - Back.svg`).
+- Use a near-monochrome interface with yellow only for the documented accent
+  and ongoing/warning states; reserve red and green for semantic status.
+- Keep cards at 6 px radius with 60% corner smoothing where the platform
+  supports it. Use a 6 px radius fallback where it does not.
+- Render official 32×32 icon artboards at 24×24 unless the context requires an
+  integer grid-preserving scale.
+- Use bundled SVGs verbatim. Recolor only through the documented text-color
+  roles; do not round, smooth, or redraw their pixel geometry.
+- Do not use Unicode glyphs as icons. Use the mapped SVG for arrows, chevrons,
+  dots, checks, close, more, and add actions.
+- Keep custom icons outside `assets/icons/`; that directory mirrors the
+  official source.
 
-## Core design attitude
+## Bundled icon categories
 
-- Text-first, monochrome-friendly, pixel-honest: near-monochrome grays with one yellow accent and red/green functional colors.
-- Icons snap to the pixel grid — no half pixels, no smooth rounded corners on pixel art (use stepped/pixelated corners).
-- Never use Unicode symbols (`→ · • ✓ ×` …) as inline icons — font glyphs are anti-aliased and break the pixel style. Use the bundled SVGs instead (`Go`, `Dot`, `Checkmark`, `Cross`, chevrons) — mapping table in `references/iconography.md`.
+The 191 official SVGs under `assets/icons/` retain the source categories:
+
+- `Edit & Settings Icons/`
+- `Feature & Function Icons/`
+- `Guide System/`
+- `Health Feature Icon/`
+- `Menu Bar Icons/`
+- `Navigate Feature Icon/`
+- `Status Icons/`
+
+Search by filename and related concept before substituting an external icon
+library. Preserve source filenames, including their original spelling.
+
+## Review checklist
+
+Before delivery, verify:
+
+- the result is mobile-app UI rather than glasses-HUD UI;
+- all colors map to documented semantic tokens;
+- typography roles and weights match the reference;
+- margins, card insets, spacing, and radii follow the defined rhythm;
+- active, disabled, warning, success, and overlay states remain distinguishable;
+- every icon is bundled or clearly identified as custom;
+- pixel icons remain sharp and recognizable at 24×24;
+- unavailable fonts or unsupported corner smoothing have explicit fallbacks.

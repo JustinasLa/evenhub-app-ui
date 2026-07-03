@@ -36,7 +36,9 @@ Pixel-style icon system for the Even Hub APP.
 
 ## Bundled SVG inventory (`assets/icons/`)
 
-191 SVGs in 7 categories, extracted from the Figma APP section. Highlighted menu variants are filled; defaults are outlined.
+191 SVGs in 7 categories, extracted from the Figma APP section. Highlighted
+menu variants use their source filled treatment. Preserve each asset as
+exported rather than inferring a universal outline or fill rule.
 
 ### Menu Bar Icons (8)
 Home Menu, Home Menu - Highlighted*, Health Menu, Health Menu - Highlighted, Even hub Menu, Even hub Menu - Highlighted, Me-Account Menu, Me-Account Menu - Highlighted

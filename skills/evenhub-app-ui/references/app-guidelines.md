@@ -14,7 +14,7 @@ Naming: `TC` = Text Color, `BC` = Background Color, `SC` = Shaded Color.
 | TC - 1st | #232323 | Majority of primary body text |
 | TC - 2nd | #7B7B7B | Secondary information |
 | TC - Accent | #232323 | Accent text |
-| TC - Red | #FF453A (token table) / #FF5454 (usage examples) | Warning messages |
+| TC - Red | #FF453A | Warning messages; use #FF5454 only when reproducing a source example that visibly uses that value |
 | TC - Green | #4BB956 | Device connection status (e.g. "Connected") |
 
 ### BC (Background Colors)
@@ -52,8 +52,8 @@ Font family: **FK Grotesk Neue** ("FK"). Weights: Regular = 400, Light = 300.
 
 ## Layout — margins
 
-- **Default margin:** all screens share a consistent left & right margin of **12px**, including within inner card structures (390px screen → 369px content width shown in spec).
-- **Card margin:** the default screen uses a **16px** margin on both left and right sides *inside* cards (369px card → 337px inner content).
+- **Screen margin:** use **12px** on the left and right of the screen.
+- **Card inset:** use **16px** on the left and right inside cards. This is separate from the outer screen margin.
 
 ## Layout — spacing
 
