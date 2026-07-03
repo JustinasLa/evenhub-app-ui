@@ -115,11 +115,32 @@ function quote(value) {
 }
 
 function runNpx(args, dryRun) {
-  const executable = process.platform === "win32" ? "npx.cmd" : "npx";
-  console.log(`> ${executable} ${args.map(quote).join(" ")}`);
+  let executable = "npx";
+  let executableArgs = args;
+
+  if (process.platform === "win32") {
+    const candidates = [
+      join(dirname(process.execPath), "node_modules", "npm", "bin", "npx-cli.js"),
+      process.env.APPDATA
+        ? join(process.env.APPDATA, "npm", "node_modules", "npm", "bin", "npx-cli.js")
+        : "",
+    ].filter(Boolean);
+    const npxCli = candidates.find(existsSync);
+    if (!npxCli) {
+      throw new Error("cannot locate npm's npx-cli.js");
+    }
+    executable = process.execPath;
+    executableArgs = [npxCli, ...args];
+  }
+
+  console.log(`> npx ${args.map(quote).join(" ")}`);
   if (dryRun) return;
 
-  const result = spawnSync(executable, args, { stdio: "inherit" });
+  // Invoke npx-cli.js through Node on Windows. This avoids both the EINVAL
+  // raised by direct .cmd execution and cmd.exe splitting paths at spaces.
+  const result = spawnSync(executable, executableArgs, {
+    stdio: "inherit",
+  });
   if (result.error) throw result.error;
   if (result.status !== 0) {
     throw new Error(`skills CLI exited with status ${result.status}`);
@@ -183,6 +204,11 @@ function main() {
     console.log("Dry run complete; no files were changed.");
   } else {
     console.log("Installed evenhub-app-ui and evenhub-pixel-icons.");
+    console.log("Verifying global skill registrations:");
+    runNpx(
+      ["-y", "skills", "list", "--global", ...agentArgs],
+      false,
+    );
     console.log("Restart each agent or begin a new session before testing.");
   }
 }
