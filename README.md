@@ -20,6 +20,14 @@ Distilled from the public Figma file **"Even Realities – Software Design Guide
 
 > **Looking for glasses HUD (Even OS) guidelines?** Those are covered by the official [everything-evenhub](https://github.com/even-realities/everything-evenhub) plugin — this skill deliberately sticks to the companion APP to avoid duplicating it.
 
+## Demo
+
+Even Hub home screen built by Claude Code with this skill active — official color tokens, 12px margins, squircle cards, and the bundled pixel icons (glasses, Bluetooth, battery, feature icons, menu bar), no manual design input:
+
+<p align="center">
+  <img src="docs/demo-home-screen.png" alt="Even Hub companion app home screen built with the skill: connected G2 device card, Translate running banner, feature list with pixel icons, and menu bar" width="480">
+</p>
+
 ## What's inside
 
 ```
