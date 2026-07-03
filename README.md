@@ -1,36 +1,34 @@
 <p align="center">
-  <strong>even-realities-design</strong>
+  <strong>evenhub-app-ui</strong>
 </p>
 
 <p align="center">
   Even Realities G2 design system as a Claude Code skill.<br>
-  Even Hub APP + Even OS 2.0 guidelines · color tokens · type scale · HUD rules · <strong>191 official pixel icons bundled</strong>.
+  Even Hub APP design guidelines · color tokens · type scale · <strong>191 official pixel icons bundled</strong>.
 </p>
 
 <p align="center">
   <a href="https://docs.anthropic.com/en/docs/claude-code"><img src="https://img.shields.io/badge/works_with-Claude_Code-orange?style=flat" alt="Claude Code"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/JustinasLa/even-realities-design?style=flat" alt="License"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/JustinasLa/evenhub-app-ui?style=flat" alt="License"></a>
 </p>
 
 ---
 
-even-realities-design is a skill/plugin for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Install once, and whenever you design or build UI for Even Realities products — the Even Hub companion app or the Even OS glasses HUD — Claude applies the official design guidelines automatically: exact hex tokens, FK Grotesk Neue / Even Roster Grotesk typography, margin & spacing metrics, pixel-icon construction rules, and the G2 HUD interaction model (two depth planes, four gestures, focus-based navigation).
+evenhub-app-ui is a skill/plugin for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Install once, and whenever you design or build UI for the Even Hub companion app, Claude applies the official design guidelines automatically: exact hex tokens, FK Grotesk Neue typography, margin & spacing metrics, and pixel-icon construction rules.
 
-Distilled from the public Figma file **"Even Realities – Software Design Guidelines"** (UIUX Design Guidelines 2025), both pages: APP Guidelines and OS Guidelines.
+Distilled from the public Figma file **"Even Realities – Software Design Guidelines"** (UIUX Design Guidelines 2025), APP Guidelines page.
+
+> **Looking for glasses HUD (Even OS) guidelines?** Those are covered by the official [everything-evenhub](https://github.com/even-realities/everything-evenhub) plugin — this skill deliberately sticks to the companion APP to avoid duplicating it.
 
 ## What's inside
 
 ```
-skills/even-realities-design/
+skills/evenhub-app-ui/
   SKILL.md                        entry point — quick-facts table, when to apply what
   references/
     app-guidelines.md             APP: TC/BC/SC color tokens, 8-step type scale,
                                   margins (12/16px), spacing (0/6/12/24px),
                                   radius (6px + 60% smoothing), component inventory
-    os-guidelines.md              OS: foreground vs app layer (2m / 3-4m planes),
-                                  gestures (tap/double-tap/swipe/long-press),
-                                  edge-to-edge · pixel-perfect · focus-based principles,
-                                  576×288 canvas, OS margins & radius, text containers
     iconography.md                icon construction (32×32 grid, 2×2px unit, do's/don'ts)
                                   + full inventory of the bundled set
   assets/icons/                   191 official SVGs in 7 categories:
@@ -44,8 +42,8 @@ skills/even-realities-design/
 
 ```bash
 # inside Claude Code
-/plugin marketplace add JustinasLa/even-realities-design
-/plugin install even-realities-design@even-realities-design
+/plugin marketplace add JustinasLa/evenhub-app-ui
+/plugin install evenhub-app-ui@evenhub-app-ui
 ```
 
 Then `/reload-plugins` (or restart Claude Code). Safe to re-run.
@@ -59,33 +57,32 @@ Copy the skill folder into a skills directory:
 
 ```bash
 # personal (all projects)
-~/.claude/skills/even-realities-design/
+~/.claude/skills/evenhub-app-ui/
 
 # or per-project
-<your-project>/.claude/skills/even-realities-design/
+<your-project>/.claude/skills/evenhub-app-ui/
 ```
 
-Copy the whole folder [`skills/even-realities-design/`](skills/even-realities-design/) — SKILL.md plus `references/` and `assets/icons/` — so the icon paths keep working.
+Copy the whole folder [`skills/evenhub-app-ui/`](skills/evenhub-app-ui/) — SKILL.md plus `references/` and `assets/icons/` — so the icon paths keep working.
 
 </details>
 
 ## Usage
 
-No command needed — the skill triggers when the conversation involves Even Realities / G2 / Even OS / Even Hub design or implementation. You can also invoke it explicitly:
+No command needed — the skill triggers when the conversation involves Even Realities / G2 / Even Hub app design or implementation. You can also invoke it explicitly:
 
 ```
-/even-realities-design
+/evenhub-app-ui
 ```
 
 Typical asks it improves:
 
 - "Build the settings screen for our G2 companion app" → correct tokens (#232323 / #EEEEEE / #FEF991…), 12px screen margins, 6px squircle cards, FK type scale.
-- "Design a teleprompter view for the glasses" → 576×288 edge-to-edge layout, Even Roster Grotesk 20/400, no-outline text container with auto scroll, one focused element.
 - "Need a battery icon" → uses the bundled `Status Icons/Battery_Low.svg` instead of inventing one.
 
 ## Icon set
 
-The 191 SVGs under [`skills/even-realities-design/assets/icons/`](skills/even-realities-design/assets/icons/) were exported from the APP section of the public Figma file. Pixel-grid style is part of the brand: use them verbatim, render at 24×24 (or integer multiples), don't recolor outside the token palette.
+The 191 SVGs under [`skills/evenhub-app-ui/assets/icons/`](skills/evenhub-app-ui/assets/icons/) were exported from the APP section of the public Figma file. Pixel-grid style is part of the brand: use them verbatim, render at 24×24 (or integer multiples), don't recolor outside the token palette.
 
 | Category | Count | Examples |
 |---|---|---|

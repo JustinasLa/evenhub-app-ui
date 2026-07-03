@@ -1,13 +1,13 @@
-# Iconography — Even OS 2.0 (APP icon set)
+# Iconography — Even Hub APP icon set
 
-Pixel-style icon system shared across the Even Hub APP and (at a smaller unit) Even OS.
+Pixel-style icon system for the Even Hub APP.
 
 ## Construction rules (APP icons)
 
 - **Base grid:** 32×32px. All Even icons are crafted on top of a foundational 32×32px grid; employ this grid while designing icons to ensure a cohesive and practical visual presentation.
 - **Padding:** 2px (allowed to be broken if necessary).
 - **Key-shapes:** use the key-shape that best demonstrates the proportion of the icon metaphor. Use it as a starting point, but don't force it if it doesn't convey the right visual message.
-- **Pixel unit:** draw with a **2×2px unit** for best consistency across all icons. (OS icons: 24×24 artboard, 3px padding, 1×1px unit — see os-guidelines.md.)
+- **Pixel unit:** draw with a **2×2px unit** for best consistency across all icons.
 - **Style:** keep the execution of the icon and metaphor as simple as possible for best focus and legibility. Respect "pixel corner characteristics" and "empty pixel characteristics" (stepped pixel corners, deliberate empty pixels).
 
 ### Best practice workflow
@@ -65,3 +65,19 @@ Bicycle, Bus, Business, Cloth Shop, Coffee shop, Compass, Crown, Direction, End 
 - Use `Guide System` chevrons/gestures for wayfinding affordances; `Menu Bar Icons` only in the app tab bar (Highlighted variant = active tab).
 - Icons render at 24×24 in UI; don't scale to arbitrary sizes that break the pixel grid (use integer multiples).
 - Don't restyle (no stroke-rounding, no recoloring beyond the TC palette).
+
+### No Unicode glyphs as iconography
+
+Never use Unicode symbol characters (`→ ← · • ✓ × ⋯ ▸ ➜` etc.) as inline icons in UI copy or labels — font-rendered glyphs are smooth/anti-aliased and break the pixel-grid brand. Substitute the bundled SVG:
+
+| Instead of | Use |
+|---|---|
+| `→` / `➜` (direction, "A to B") | `Guide System/Go.svg` |
+| `‹ ›` / `▸` (navigation) | `Guide System/Chevron - *.svg` (or `Chevron_small`) |
+| `·` / `•` (separator, bullet) | `Status Icons/Dot.svg` |
+| `✓` | `Status Icons/Checkmark.svg` |
+| `×` (close/remove) | `Edit & Settings Icons/Cross.svg` (or `Cross_small`) |
+| `⋯` (more) | `Status Icons/More.svg` |
+| `+` (add) | `Edit & Settings Icons/Add.svg` |
+
+Inline icons in text lines: render as `<img>`/icon element sized to the text (16px next to 13–15px text is fine — integer scale of the grid), vertically centered, with 4–6px gaps. Plain punctuation inside sentences (commas, parentheses, real ellipsis in prose) stays text — the rule targets symbols doing *icon work*.
