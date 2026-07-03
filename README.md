@@ -8,8 +8,9 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/JustinasLa/evenhub-app-ui/stargazers"><img src="https://img.shields.io/github/stars/JustinasLa/evenhub-app-ui?style=flat&color=yellow" alt="Stars"></a>
   <a href="https://docs.anthropic.com/en/docs/claude-code"><img src="https://img.shields.io/badge/works_with-Claude_Code-orange?style=flat" alt="Claude Code"></a>
-  <a href="https://github.com/JustinasLa/evenhub-app-ui/actions/workflows/checks.yml"><img src="https://github.com/JustinasLa/evenhub-app-ui/actions/workflows/checks.yml/badge.svg" alt="Checks"></a>
+  <a href="https://github.com/JustinasLa/evenhub-app-ui/commits/master"><img src="https://img.shields.io/github/last-commit/JustinasLa/evenhub-app-ui?style=flat" alt="Last commit"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/JustinasLa/evenhub-app-ui?style=flat" alt="License"></a>
 </p>
 
