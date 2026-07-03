@@ -94,3 +94,4 @@ Recurring component patterns seen in the guidelines:
 - Device card: thumbnail, "Device name" (TC-1st), "Connected" (TC-Green), info icon.
 - Toast/ongoing action: BC-Accent (#FEF991) card.
 - Header bar: 60px tall, horizontal, space-between, 20px top/bottom padding.
+- Toggle: use the paired `Toggle On.svg` and `Toggle Off.svg` assets at their native 36×24 size. The off track uses BC-4th (`#E4E4E4`); the on track uses BC-Highlight (`#232323`).

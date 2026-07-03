@@ -20,7 +20,7 @@
   "interface": {
     "displayName": "Even Hub App UI",
     "shortDescription": "Design Even Hub mobile UI with official guidance",
-    "longDescription": "Design, implement, and review Even Realities G2 companion-app interfaces with the official color tokens, typography, layout rules, component patterns, and 191 bundled pixel icons.",
+    "longDescription": "Design, implement, and review Even Realities G2 companion-app interfaces with the official color tokens, typography, layout rules, component patterns, and 193 bundled SVG assets.",
     "developerName": "JustinasLa",
     "category": "Design",
     "capabilities": [

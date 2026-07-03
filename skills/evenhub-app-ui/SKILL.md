@@ -54,7 +54,8 @@ silently presenting another font as exact.
 - Keep cards at 6 px radius with 60% corner smoothing where the platform
   supports it. Use a 6 px radius fallback where it does not.
 - Render official 32×32 icon artboards at 24×24 unless the context requires an
-  integer grid-preserving scale.
+  integer grid-preserving scale. Render the paired toggle assets at their
+  native 36×24 size.
 - Use bundled SVGs verbatim. Recolor only through the documented text-color
   roles; do not round, smooth, or redraw their pixel geometry.
 - Do not use Unicode glyphs as icons. Use the mapped SVG for arrows, chevrons,
@@ -64,7 +65,7 @@ silently presenting another font as exact.
 
 ## Bundled icon categories
 
-The 191 official SVGs under `assets/icons/` retain the source categories:
+The 193 official SVGs under `assets/icons/` retain the source categories:
 
 - `Edit & Settings Icons/`
 - `Feature & Function Icons/`
@@ -76,6 +77,9 @@ The 191 official SVGs under `assets/icons/` retain the source categories:
 
 Search by filename and related concept before substituting an external icon
 library. Preserve source filenames, including their original spelling.
+For boolean controls, use `Feature & Function Icons/Toggle On.svg` and
+`Toggle Off.svg` as the two visual states. Do not use the standalone
+`Edit & Settings Icons/Switch.svg` action icon as a toggle control.
 
 ## Review checklist
 

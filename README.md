@@ -4,7 +4,7 @@
 
 <p align="center">
   Even Realities G2 design system for Claude Code and Codex.<br>
-  Even Hub APP design guidelines · color tokens · type scale · <strong>191 official pixel icons bundled</strong>.
+  Even Hub APP design guidelines · color tokens · type scale · <strong>193 official SVG assets bundled</strong>.
 </p>
 
 <p align="center">
@@ -22,14 +22,6 @@ Distilled from the public Figma file **"Even Realities – Software Design Guide
 
 > **Looking for glasses HUD (Even OS) guidelines?** Those are covered by the official [everything-evenhub](https://github.com/even-realities/everything-evenhub) plugin — this skill deliberately sticks to the companion APP to avoid duplicating it.
 
-## Demo
-
-Even Hub home screen built by Claude Code with this skill active — official color tokens, 12px margins, squircle cards, and the bundled pixel icons (glasses, Bluetooth, battery, feature icons, menu bar), no manual design input:
-
-<p align="center">
-  <img src="docs/demo-home-screen.png" alt="Even Hub companion app home screen built with the skill: connected G2 device card, Translate running banner, feature list with pixel icons, and menu bar" width="480">
-</p>
-
 ## What's inside
 
 ```
@@ -41,7 +33,7 @@ skills/evenhub-app-ui/
                                   radius (6px + 60% smoothing), component inventory
     iconography.md                icon construction (32×32 grid, 2×2px unit, do's/don'ts)
                                   + full inventory of the bundled set
-  assets/icons/                   191 official SVGs in 7 categories:
+  assets/icons/                   193 official SVGs in 7 categories:
                                   Menu Bar · Feature & Function · Edit & Settings ·
                                   Guide System · Health · Navigate · Status
 
@@ -135,17 +127,42 @@ Typical asks it improves:
 
 ## Icon set
 
-The 191 SVGs under [`skills/evenhub-app-ui/assets/icons/`](skills/evenhub-app-ui/assets/icons/) were exported from the APP section of the public Figma file. Pixel-grid style is part of the brand: use them verbatim, render at 24×24 (or integer multiples), don't recolor outside the token palette.
+The 193 SVGs under [`skills/evenhub-app-ui/assets/icons/`](skills/evenhub-app-ui/assets/icons/) were exported from the APP section of the public Figma file. Pixel-grid style is part of the brand: use icons verbatim at 24×24 (or integer multiples) and the paired toggle controls at their native 36×24 size. Don't recolor outside the token palette.
 
 | Category | Count | Examples |
 |---|---|---|
-| Status Icons | 55 | Battery_Full, Bluetooth, Glasses Charging, Alert |
-| Feature & Function | 41 | Even AI, Teleprompt, Translate, Navigate, Weather |
+| Status Icons | 56 | Battery_Full, Bluetooth, Glasses Charging, Alert |
+| Feature & Function | 42 | Even AI, Teleprompt, Translate, Toggle On/Off, Weather |
 | Edit & Settings | 32 | Add, Edit, Trash, Undo, Settings |
 | Navigate Feature | 23 | Compass, Location, Restaurant, Train |
 | Guide System | 20 | Chevrons, Single/Double Tap, Long Press, Swipe |
 | Health Feature | 12 | Heart rate, HRV, Sleep, Steps |
 | Menu Bar | 8 | Home/Health/Even hub/Me-Account (+ Highlighted) |
+
+## Test: designing companion apps (`evenhub-app-ui`)
+
+Ran the `evenhub-app-ui` skill to design two phone companion app concepts. These tests cover visual design only; no functionality is implemented.
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="docs/demo-whatsapp-app.png" alt="Phone UI concept for a WhatsApp companion app on Even G2, showing connection setup, notification preferences, and message privacy controls" height="520"></td>
+    <td align="center"><img src="docs/demo-home-screen.png" alt="Even Hub home screen mockup showing a connected G2, active Translate card, feature list, action button, and menu bar" height="520"></td>
+  </tr>
+  <tr>
+    <td align="center"><strong>WhatsApp companion app</strong></td>
+    <td align="center"><strong>Even Hub home screen</strong></td>
+  </tr>
+  <tr>
+    <td align="center">Prompt: “create an even g2 app for whatsapp. There is no functionality for now, only design for phone.”</td>
+    <td align="center">Prompt: “Create a mock Even Realities app UI”</td>
+  </tr>
+  <tr>
+    <td align="center">Phone-only design concept</td>
+    <td align="center">Claude Code · Opus 4.8 · default effort</td>
+  </tr>
+</table>
+
+Both results use the Even Hub visual language: a near-monochrome palette, yellow accent states, green connection status, grouped cards, clear title/body hierarchy, and pixel-style interface icons.
 
 ## Test: creating new icons (`evenhub-pixel-icons`)
 

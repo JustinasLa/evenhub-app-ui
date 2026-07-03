@@ -36,7 +36,7 @@ Pixel-style icon system for the Even Hub APP.
 
 ## Bundled SVG inventory (`assets/icons/`)
 
-191 SVGs in 7 categories, extracted from the Figma APP section. Highlighted
+193 SVGs in 7 categories, extracted from the Figma APP section. Highlighted
 menu variants use their source filled treatment. Preserve each asset as
 exported rather than inferring a universal outline or fill rule.
 
@@ -44,8 +44,8 @@ exported rather than inferring a universal outline or fill rule.
 Home Menu, Home Menu - Highlighted*, Health Menu, Health Menu - Highlighted, Even hub Menu, Even hub Menu - Highlighted, Me-Account Menu, Me-Account Menu - Highlighted
 (*file name in set: "Home Menu - Hightlted" spelling follows source)
 
-### Feature & Function Icons (41)
-3D Facial Scan, Access Control, Account, Calendar, Camera, Direct Push, EIS, Email, Even AI, Feedback, HeadUp Angle, InBox, Interface Settings, Languages, Learn and Explore, Menu, Message, Navigate, News, Notification, Personal Info, Phone Call, Phone Voice Input, Privacy, QR Code, QuickNote, Scan, Screen off, Services, Stocks, Study, Teleprompt, Theme, Time Counting, Transcribe, Translate, Voice Print, Weat Detect (Wear Detect), Weather, Wiki
+### Feature & Function Icons (42)
+3D Facial Scan, Access Control, Account, Calendar, Camera, Direct Push, EIS, Email, Even AI, Feedback, HeadUp Angle, InBox, Interface Settings, Languages, Learn and Explore, Menu, Message, Navigate, News, Notification, Personal Info, Phone Call, Phone Voice Input, Privacy, QR Code, QuickNote, Scan, Screen off, Services, Stocks, Study, Teleprompt, Theme, Time Counting, Toggle Off, Toggle On, Transcribe, Translate, Voice Print, Weat Detect (Wear Detect), Weather, Wiki
 
 ### Edit & Settings Icons (32)
 Add, Checklist, Copy, Cross, Cross_small, Cut, Display Adj On, Distance Adj, Dot List, Edit, Height Adj, Import, Layout Settings, Multi-selection, New, Numble List, Options, Paste, Pause, Pin, Play, Redo, Restore, Settings, Share, Sweep, Switch, Trash, Undo, Unpin, Upload to Cloud, Width
@@ -59,13 +59,14 @@ Heart rate, HRV, Lift_1, Lift_2, Lift_3, Run, Sleep, Sp02, Stand, Steps, Tempera
 ### Navigate Feature Icon (23)
 Bicycle, Bus, Business, Cloth Shop, Coffee shop, Compass, Crown, Direction, End Location, Flag, Gift, Groceries, Home Address, Hotel, Location, Office Address, Relocate, Restaurant, Shopping, Train, Walk, Zoom In, Zoom Out
 
-### Status Icons (55)
+### Status Icons (56)
 1st Floor, 2nd Floor, Alert, Archived File, Bad, Bad Pressed, Battery_50, Battery_75, Battery_Dying, Battery_Full, Battery_Low, Bluetooth, Bluetooth Disconnecte(d), Brightness, Brightness_Auto, Case, Case Battery, Case Charging, Checkbox, Checkmark, Clickbox, Complete, Disconnected, Display Adj Off, Dot, Eye closed, Eye open, FAQs, Fast, Fav, File, Glasses, Glasses Battery, Glasses Charging, Good, Good Pressed, Grabber, HeadUp, Hint, Info, Log out, Login, More, Network error, Reset, Saved, Selected, Selected Box, Slow, Speaker Off, Speaker On, Text Sizing, Unbind, Undisturb, Unfav, Unselected Box
 
 ## Usage guidance
 
 - Use `Guide System` chevrons/gestures for wayfinding affordances; `Menu Bar Icons` only in the app tab bar (Highlighted variant = active tab).
 - Icons render at 24×24 in UI; don't scale to arbitrary sizes that break the pixel grid (use integer multiples).
+- Toggle controls are the exception to the icon sizing rule: use `Feature & Function Icons/Toggle On.svg` and `Toggle Off.svg` verbatim at 36×24. Bind the asset to the boolean state and provide an accessible label. Do not substitute `Edit & Settings Icons/Switch.svg`, which is an action icon rather than a two-state control.
 - Don't restyle (no stroke-rounding, no recoloring beyond the TC palette).
 
 ### No Unicode glyphs as iconography

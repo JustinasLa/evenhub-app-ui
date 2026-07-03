@@ -5,7 +5,7 @@ description: >-
   Even Hub visual language when the bundled icon set has no suitable metaphor.
   Use when asked to design, draw, generate, or refine an icon for an Even Hub
   app, Even Realities G2 companion app, or the Even pixel-icon aesthetic.
-  First search the 191 bundled icons in the sibling evenhub-app-ui skill; use
+  First search the 193 bundled icons in the sibling evenhub-app-ui skill; use
   that skill instead when an existing icon, UI token, or layout is sufficient.
 ---
 
