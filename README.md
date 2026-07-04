@@ -145,8 +145,8 @@ Ran the `evenhub-app-ui` skill to design two phone companion app concepts. These
 
 <table align="center">
   <tr>
-    <td align="center"><img src="docs/demo-whatsapp-app.png" alt="Phone UI concept for a WhatsApp companion app on Even G2, showing connection setup, notification preferences, and message privacy controls" width="360" height="632"></td>
-    <td align="center"><img src="docs/demo-instagram-app.png" alt="Phone UI concept for an Instagram companion app on Even G2, showing a stories row, feed posts with like, comment, share, and save actions, and a bottom tab bar" width="360" height="632"></td>
+    <td align="center"><img src="docs/demo-whatsapp-phone.png" alt="Phone UI concept for a WhatsApp companion app on Even G2, showing connection setup, notification preferences, and message privacy controls" width="360" height="632"></td>
+    <td align="center"><img src="docs/demo-instagram-phone.png" alt="Phone UI concept for an Instagram companion app on Even G2, showing a stories row, feed posts with like, comment, share, and save actions, and a bottom tab bar" width="360" height="632"></td>
   </tr>
   <tr>
     <td align="center"><strong>WhatsApp companion app</strong></td>
