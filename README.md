@@ -12,7 +12,6 @@
 <p align="center">
   <a href="https://docs.anthropic.com/en/docs/claude-code"><img src="https://img.shields.io/badge/works_with-Claude_Code-orange?style=flat" alt="Claude Code"></a>
   <a href="https://developers.openai.com/codex/"><img src="https://img.shields.io/badge/works_with-Codex-black?style=flat" alt="Codex"></a>
-  <a href="skills/evenhub-app-ui/assets/icons/"><img src="https://img.shields.io/badge/official_icons-193_SVGs-fef991?style=flat" alt="193 icons"></a>
   <a href="https://github.com/JustinasLa/evenhub-app-ui/commits/master"><img src="https://img.shields.io/github/last-commit/JustinasLa/evenhub-app-ui?style=flat" alt="Last commit"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/JustinasLa/evenhub-app-ui?style=flat&cacheSeconds=300" alt="License"></a>
 </p>
@@ -141,11 +140,7 @@ Ran the `evenhub-app-ui` skill to design two phone companion app concepts. Visua
   </tr>
   <tr>
     <td align="center">Prompt: “create an even g2 app for whatsapp.<br>There is no functionality for now,<br>only design for phone.”</td>
-    <td align="center">Prompt: “Redesign instagram to look like<br>instagram. Just follow the skill”</td>
-  </tr>
-  <tr>
-    <td align="center">Phone-only design concept</td>
-    <td align="center">Phone-only design concept</td>
+    <td align="center">Prompt: “Design instagram mock app. Just follow the skill”</td>
   </tr>
 </table>
 
