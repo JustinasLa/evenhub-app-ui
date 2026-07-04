@@ -12,7 +12,6 @@
 <p align="center">
   <a href="https://docs.anthropic.com/en/docs/claude-code"><img src="https://img.shields.io/badge/works_with-Claude_Code-orange?style=flat" alt="Claude Code"></a>
   <a href="https://developers.openai.com/codex/"><img src="https://img.shields.io/badge/works_with-Codex-black?style=flat" alt="Codex"></a>
-  <a href="https://github.com/JustinasLa/evenhub-app-ui/commits/master"><img src="https://img.shields.io/github/last-commit/JustinasLa/evenhub-app-ui?style=flat" alt="Last commit"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/JustinasLa/evenhub-app-ui?style=flat&cacheSeconds=300" alt="License"></a>
 </p>
 
