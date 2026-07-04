@@ -145,20 +145,20 @@ Ran the `evenhub-app-ui` skill to design two phone companion app concepts. These
 
 <table align="center">
   <tr>
-    <td align="center"><img src="docs/demo-whatsapp-app.png" alt="Phone UI concept for a WhatsApp companion app on Even G2, showing connection setup, notification preferences, and message privacy controls" width="360" height="520"></td>
-    <td align="center"><img src="docs/demo-home-screen.png" alt="Even Hub home screen mockup showing a connected G2, active Translate card, feature list, action button, and menu bar" width="360" height="520"></td>
+    <td align="center"><img src="docs/demo-whatsapp-app.png" alt="Phone UI concept for a WhatsApp companion app on Even G2, showing connection setup, notification preferences, and message privacy controls" width="360" height="632"></td>
+    <td align="center"><img src="docs/demo-instagram-app.png" alt="Phone UI concept for an Instagram companion app on Even G2, showing a stories row, feed posts with like, comment, share, and save actions, and a bottom tab bar" width="360" height="632"></td>
   </tr>
   <tr>
     <td align="center"><strong>WhatsApp companion app</strong></td>
-    <td align="center"><strong>Even Hub home screen</strong></td>
+    <td align="center"><strong>Instagram companion app</strong></td>
   </tr>
   <tr>
     <td align="center">Prompt: “create an even g2 app for whatsapp. There is no functionality for now, only design for phone.”</td>
-    <td align="center">Prompt: “Create a mock Even Realities app UI”</td>
+    <td align="center">Prompt: “Redesign instagram to look like instagram. Just follow the skill”</td>
   </tr>
   <tr>
     <td align="center">Phone-only design concept</td>
-    <td align="center">Claude Code · Opus 4.8 · default effort</td>
+    <td align="center">Phone-only design concept</td>
   </tr>
 </table>
 
