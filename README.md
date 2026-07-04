@@ -1,55 +1,61 @@
+<h1 align="center">evenhub-app-ui</h1>
+
 <p align="center">
-  <strong>evenhub-app-ui</strong>
+  <strong>your agent now speaks fluent Even OS 2.0</strong>
 </p>
 
 <p align="center">
   Even Realities G2 design system for Claude Code and Codex.<br>
-  Even Hub APP design guidelines · color tokens · type scale · <strong>193 official SVG assets bundled</strong>.
+  Official APP guidelines · exact color tokens · 8-step type scale · <strong>193 official pixel SVGs bundled</strong>.
 </p>
 
 <p align="center">
   <a href="https://docs.anthropic.com/en/docs/claude-code"><img src="https://img.shields.io/badge/works_with-Claude_Code-orange?style=flat" alt="Claude Code"></a>
   <a href="https://developers.openai.com/codex/"><img src="https://img.shields.io/badge/works_with-Codex-black?style=flat" alt="Codex"></a>
+  <a href="skills/evenhub-app-ui/assets/icons/"><img src="https://img.shields.io/badge/official_icons-193_SVGs-fef991?style=flat" alt="193 icons"></a>
   <a href="https://github.com/JustinasLa/evenhub-app-ui/commits/master"><img src="https://img.shields.io/github/last-commit/JustinasLa/evenhub-app-ui?style=flat" alt="Last commit"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/JustinasLa/evenhub-app-ui?style=flat&cacheSeconds=300" alt="License"></a>
 </p>
 
+<p align="center">
+  <a href="#install">Install</a> •
+  <a href="#what-you-get">What You Get</a> •
+  <a href="#usage">Usage</a> •
+  <a href="#field-test-designing-companion-apps">Field Tests</a> •
+  <a href="#icon-set">Icon Set</a>
+</p>
+
 ---
 
-evenhub-app-ui is a skill/plugin for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and [Codex](https://developers.openai.com/codex/). Install once, and your coding agent applies the official design guidelines whenever you design or build UI for the Even Hub companion app: exact hex tokens, FK Grotesk Neue typography, margin and spacing metrics, and pixel-icon construction rules.
+A skill/plugin for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and [Codex](https://developers.openai.com/codex/). Install once — from then on, whenever you design or build UI for the Even Hub companion app, your agent stops guessing hex values and inventing icons. It applies the **official design guidelines**: exact tokens, FK Grotesk Neue typography, the 12/16/6 layout rhythm, and real pixel-grid icon construction rules.
 
 Distilled from the public Figma file **"Even Realities – Software Design Guidelines"** (UIUX Design Guidelines 2025), APP Guidelines page.
 
+```
+┌──────────────────────────────────────────────┐
+│  COLOR TOKENS      exact hex, semantic roles │
+│  TYPE SCALE        8 steps, FK Grotesk Neue  │
+│  OFFICIAL ICONS    ████████ 193 SVGs         │
+│  LAYOUT RHYTHM     12px / 16px / 6px         │
+│  GUESSWORK         0                         │
+└──────────────────────────────────────────────┘
+```
+
 > **Looking for glasses HUD (Even OS) guidelines?** Those are covered by the official [everything-evenhub](https://github.com/even-realities/everything-evenhub) plugin — this skill deliberately sticks to the companion APP to avoid duplicating it.
 
-## What's inside
+## What You Get
 
-```
-skills/evenhub-app-ui/
-  SKILL.md                        entry point — quick-facts table, when to apply what
-  references/
-    app-guidelines.md             APP: TC/BC/SC color tokens, 8-step type scale,
-                                  margins (12/16px), spacing (0/6/12/24px),
-                                  radius (6px + 60% smoothing), component inventory
-    iconography.md                icon construction (32×32 grid, 2×2px unit, do's/don'ts)
-                                  + full inventory of the bundled set
-  assets/icons/                   193 official SVGs in 7 categories:
-                                  Menu Bar · Feature & Function · Edit & Settings ·
-                                  Guide System · Health · Navigate · Status
-
-skills/evenhub-pixel-icons/
-  SKILL.md                        create NEW icons in the official pixel style when
-                                  the bundled set lacks the metaphor — authentic SVG
-                                  anatomy, grid-first workflow, verification checklist
-  scripts/grid2svg.mjs            deterministic ASCII-grid → pixel-icon SVG converter
-```
+| Skill | What |
+|---|---|
+| `evenhub-app-ui` | The design system. Color tokens, typography, spacing, radii, component inventory, and the full 193-icon official SVG set — applied automatically to any Even Hub phone-app design work. |
+| `evenhub-pixel-icons` | The icon forge. When the bundled set lacks a metaphor, draws a **new** icon in the authentic pixel style: 16×16 ASCII grid sketch → deterministic `grid2svg.mjs` conversion → spec-compliant 32×32 SVG. |
 
 ## Install
 
 ### One command — all detected agents
 
 Requires Node.js 18 or newer. The installer detects supported agents, installs
-both skills globally, and skips agents that are not present.
+both skills globally, and skips agents that are not present. Safe to re-run.
 
 ```bash
 # macOS · Linux · WSL · Git Bash
@@ -62,23 +68,8 @@ irm https://raw.githubusercontent.com/JustinasLa/evenhub-app-ui/master/install.p
 ```
 
 Preview first with `--dry-run`, inspect detection with `--list`, or target one
-agent with `--only codex` or `--only claude-code`. The installer is safe to
-re-run; use `--force` to replace existing copies and `--uninstall` to remove
-both skills.
-
-### Codex
-
-The repository includes a native `.codex-plugin/plugin.json` manifest and
-Codex UI metadata for both bundled skills.
-
-In the Codex app, clone or open this repository, then use **Settings → General
-→ Import other agent setup** and select the plugin when prompted. Start a new
-thread after import. You can invoke the plugin or either skill explicitly with
-`@evenhub-app-ui`, `$evenhub-app-ui`, or `$evenhub-pixel-icons`.
-
-For local marketplace development, add this plugin directory to a Codex
-personal or repository marketplace, restart Codex, then install it from
-`/plugins`.
+agent with `--only codex` or `--only claude-code`. Use `--force` to replace
+existing copies and `--uninstall` to remove both skills.
 
 ### Claude Code
 
@@ -111,37 +102,33 @@ Copy the whole folder [`skills/evenhub-app-ui/`](skills/evenhub-app-ui/) — SKI
 
 </details>
 
+### Codex
+
+The repository includes a native `.codex-plugin/plugin.json` manifest and
+Codex UI metadata for both bundled skills.
+
+In the Codex app, clone or open this repository, then use **Settings → General
+→ Import other agent setup** and select the plugin when prompted. Start a new
+thread after import. You can invoke the plugin or either skill explicitly with
+`@evenhub-app-ui`, `$evenhub-app-ui`, or `$evenhub-pixel-icons`.
+
+For local marketplace development, add this plugin directory to a Codex
+personal or repository marketplace, restart Codex, then install it from
+`/plugins`.
+
 ## Usage
 
-No command needed — the skill triggers when the conversation involves Even Realities / G2 / Even Hub app design or implementation. You can also invoke it explicitly:
+No command needed — the skill triggers whenever the conversation involves Even Realities / G2 / Even Hub app design or implementation. Explicit invoke: `/evenhub-app-ui`.
 
-```
-/evenhub-app-ui
-```
+| You say | Skill makes sure |
+|---|---|
+| "Build the settings screen for our G2 companion app" | Correct tokens (`#232323` / `#EEEEEE` / `#FEF991`…), 12px screen margins, 6px squircle cards, FK type scale. |
+| "Need a battery icon" | Uses the bundled `Status Icons/Battery_Low.svg` instead of inventing one. |
+| "Need a WiFi icon and the set has none" | `evenhub-pixel-icons` kicks in and draws a new SVG matching the official style — 32×32 grid, 2×2px unit, stepped corners, `#232323` fill. |
 
-Typical asks it improves:
+## Field test: designing companion apps
 
-- "Build the settings screen for our G2 companion app" → correct tokens (#232323 / #EEEEEE / #FEF991…), 12px screen margins, 6px squircle cards, FK type scale.
-- "Need a battery icon" → uses the bundled `Status Icons/Battery_Low.svg` instead of inventing one.
-- "Need a WiFi icon and the set has none" → the `evenhub-pixel-icons` skill kicks in and draws a new SVG that matches the official style (32×32 grid, 2×2px unit, stepped corners, `#232323` fill).
-
-## Icon set
-
-The 193 SVGs under [`skills/evenhub-app-ui/assets/icons/`](skills/evenhub-app-ui/assets/icons/) were exported from the APP section of the public Figma file. Pixel-grid style is part of the brand: use icons verbatim at 24×24 (or integer multiples) and the paired toggle controls at their native 36×24 size. Don't recolor outside the token palette.
-
-| Category | Count | Examples |
-|---|---|---|
-| Status Icons | 56 | Battery_Full, Bluetooth, Glasses Charging, Alert |
-| Feature & Function | 42 | Even AI, Teleprompt, Translate, Toggle On/Off, Weather |
-| Edit & Settings | 32 | Add, Edit, Trash, Undo, Settings |
-| Navigate Feature | 23 | Compass, Location, Restaurant, Train |
-| Guide System | 20 | Chevrons, Single/Double Tap, Long Press, Swipe |
-| Health Feature | 12 | Heart rate, HRV, Sleep, Steps |
-| Menu Bar | 8 | Home/Health/Even hub/Me-Account (+ Highlighted) |
-
-## Test: designing companion apps (`evenhub-app-ui`)
-
-Ran the `evenhub-app-ui` skill to design two phone companion app concepts. These tests cover visual design only; no functionality is implemented.
+Ran the `evenhub-app-ui` skill to design two phone companion app concepts. Visual design only; no functionality implemented. No mockup tools, no Figma — just the skill and a prompt.
 
 <table align="center">
   <tr>
@@ -162,11 +149,11 @@ Ran the `evenhub-app-ui` skill to design two phone companion app concepts. These
   </tr>
 </table>
 
-Both results use the Even Hub visual language: a near-monochrome palette, yellow accent states, green connection status, grouped cards, clear title/body hierarchy, and pixel-style interface icons.
+Both results speak the Even Hub visual language: near-monochrome palette, yellow accent states, green connection status, grouped cards, clear title/body hierarchy, pixel-style interface icons. Two different apps, one consistent design system — that's the point.
 
-## Test: creating new icons (`evenhub-pixel-icons`)
+## Field test: creating new icons
 
-Ran the `evenhub-pixel-icons` skill end-to-end to create four custom icon tests. Same workflow each time: sketch on the skill's 16×16 ASCII grid (1 cell = 2×2px), then convert with the bundled `scripts/grid2svg.mjs` for a deterministic, spec-compliant SVG (32×32 viewBox, `#232323` fill, axis-aligned bars only, no strokes/curves). The final coffee cup is an intentionally generated variant; in normal use, the bundled `Coffee shop` icon should be reused because it is already a close match.
+Ran the `evenhub-pixel-icons` skill end-to-end to create four custom icon tests, across two different agents and three different models. Same workflow each time: sketch on the skill's 16×16 ASCII grid (1 cell = 2×2px), then convert with the bundled `scripts/grid2svg.mjs` for a deterministic, spec-compliant SVG (32×32 viewBox, `#232323` fill, axis-aligned bars only, no strokes/curves). The final coffee cup is an intentionally generated variant; in normal use, the bundled `Coffee shop` icon should be reused because it is already a close match.
 
 <table align="center">
   <tr>
@@ -447,7 +434,47 @@ All four pass the skill's verification checklist: 32×32 viewBox, no `stroke`, n
 
 </details>
 
-## Credits & license
+## Icon Set
+
+The 193 SVGs under [`skills/evenhub-app-ui/assets/icons/`](skills/evenhub-app-ui/assets/icons/) were exported from the APP section of the public Figma file. Pixel-grid style is part of the brand: use icons verbatim at 24×24 (or integer multiples) and the paired toggle controls at their native 36×24 size. Don't recolor outside the token palette.
+
+| Category | Count | Examples |
+|---|---:|---|
+| Status Icons | 56 | Battery_Full, Bluetooth, Glasses Charging, Alert |
+| Feature & Function | 42 | Even AI, Teleprompt, Translate, Toggle On/Off, Weather |
+| Edit & Settings | 32 | Add, Edit, Trash, Undo, Settings |
+| Navigate Feature | 23 | Compass, Location, Restaurant, Train |
+| Guide System | 20 | Chevrons, Single/Double Tap, Long Press, Swipe |
+| Health Feature | 12 | Heart rate, HRV, Sleep, Steps |
+| Menu Bar | 8 | Home/Health/Even hub/Me-Account (+ Highlighted) |
+
+## What's Inside
+
+```
+skills/evenhub-app-ui/
+  SKILL.md                        entry point — quick-facts table, when to apply what
+  references/
+    app-guidelines.md             APP: TC/BC/SC color tokens, 8-step type scale,
+                                  margins (12/16px), spacing (0/6/12/24px),
+                                  radius (6px + 60% smoothing), component inventory
+    iconography.md                icon construction (32×32 grid, 2×2px unit, do's/don'ts)
+                                  + full inventory of the bundled set
+  assets/icons/                   193 official SVGs in 7 categories:
+                                  Menu Bar · Feature & Function · Edit & Settings ·
+                                  Guide System · Health · Navigate · Status
+
+skills/evenhub-pixel-icons/
+  SKILL.md                        create NEW icons in the official pixel style when
+                                  the bundled set lacks the metaphor — authentic SVG
+                                  anatomy, grid-first workflow, verification checklist
+  scripts/grid2svg.mjs            deterministic ASCII-grid → pixel-icon SVG converter
+```
+
+## Star This Repo
+
+If your G2 companion app now ships with the right shade of `#232323`, a star costs zero pixels. ⭐
+
+## Credits & License
 
 Design guidelines and icon artwork © [Even Realities](https://www.evenrealities.com) — published by them as a public Figma resource for developers building on G2. This repo repackages that public resource for Claude Code workflows; not affiliated with or endorsed by Even Realities.
 
