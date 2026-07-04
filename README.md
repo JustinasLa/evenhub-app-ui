@@ -153,8 +153,8 @@ Ran the `evenhub-app-ui` skill to design two phone companion app concepts. These
     <td align="center"><strong>Instagram companion app</strong></td>
   </tr>
   <tr>
-    <td align="center">Prompt: “create an even g2 app for whatsapp. There is no functionality for now, only design for phone.”</td>
-    <td align="center">Prompt: “Redesign instagram to look like instagram. Just follow the skill”</td>
+    <td align="center">Prompt: “create an even g2 app for whatsapp.<br>There is no functionality for now,<br>only design for phone.”</td>
+    <td align="center">Prompt: “Redesign instagram to look like<br>instagram. Just follow the skill”</td>
   </tr>
   <tr>
     <td align="center">Phone-only design concept</td>
