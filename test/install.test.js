@@ -13,10 +13,10 @@ const agents = [
   ["cline", "Cline", null, ".cline"],
   ["gemini-cli", "Gemini CLI", "gemini", ".gemini"],
   ["opencode", "OpenCode", "opencode", ".config/opencode"],
-  ["github-copilot", "GitHub Copilot", "github-copilot", ".copilot"],
+  ["github-copilot", "GitHub Copilot", "copilot", ".copilot"],
   ["continue", "Continue", "cn", ".continue"],
   ["roo", "Roo Code", null, ".roo"],
-  ["kilo", "Kilo Code", "kilocode", ".kilocode"],
+  ["kilo", "Kilo Code", ["kilo", "kilocode"], ".kilocode"],
   ["aider-desk", "AiderDesk", "aider-desk", ".aider-desk"],
   ["amp", "Amp", "amp", ".config/amp"],
   ["openclaw", "OpenClaw", "openclaw", ".openclaw"],
@@ -77,7 +77,7 @@ test("installer lists every supported agent without installing", (t) => {
   const lines = result.stdout.trim().split(/\r?\n/);
   assert.equal(lines.length, agents.length);
   agents.forEach(([id, label], index) => assert.match(lines[index], new RegExp(`^${id}\\s+not detected\\s+${label}$`)));
-  assert.equal(result.probes.length, agents.filter((agent) => agent[2]).length);
+  assert.equal(result.probes.length, agents.flatMap((agent) => agent[2] || []).length);
   assert.deepEqual(result.calls, []);
 });
 
@@ -86,6 +86,118 @@ test("installer detects every agent by its configuration directory", (t) => {
   expectSuccess(result);
   for (const line of result.stdout.trim().split(/\r?\n/)) assert.match(line, /\s+detected\s+/);
   assert.deepEqual(result.calls, []);
+});
+
+for (const [id, environmentName, defaultPath] of [
+  ["claude-code", "CLAUDE_CONFIG_DIR", ".claude"],
+  ["codex", "CODEX_HOME", ".codex"],
+]) {
+  test(`installer detects ${id} through its custom configuration directory`, (t) => {
+    const customHome = join(temporaryDirectory(t), "custom agent home");
+    const result = runInstaller(t, [], {
+      existingPaths: [customHome],
+      agentEnv: { [environmentName]: `  ${customHome}  ` },
+    });
+    expectSuccess(result);
+    assert.deepEqual(result.calls.map((call) => call.args), [addArgs([id]), listArgs([id])]);
+  });
+
+  test(`installer does not detect ${id} from an overridden default directory`, (t) => {
+    const result = runInstaller(t, ["--list"], {
+      agentPaths: [defaultPath],
+      agentEnv: { [environmentName]: join(temporaryDirectory(t), "missing custom home") },
+    });
+    expectSuccess(result);
+    assert.match(result.stdout, new RegExp(`^${id}\\s+not detected\\s+`, "m"));
+    assert.deepEqual(result.calls, []);
+  });
+}
+
+for (const emptyValue of ["", "  "]) {
+  test(`installer uses default agent homes for ${JSON.stringify(emptyValue)} overrides`, (t) => {
+    const result = runInstaller(t, [], {
+      agentPaths: [".claude", ".codex"],
+      agentEnv: { CODEX_HOME: emptyValue, CLAUDE_CONFIG_DIR: emptyValue },
+    });
+    expectSuccess(result);
+    assert.deepEqual(result.calls.map((call) => call.args), [addArgs(["claude-code", "codex"]), listArgs(["claude-code", "codex"])]);
+  });
+}
+
+test("installer detects OpenCode, Amp, and Goose through XDG_CONFIG_HOME", (t) => {
+  const configHome = join(temporaryDirectory(t), "custom configuration home");
+  const ids = ["opencode", "amp", "goose"];
+  const result = runInstaller(t, [], {
+    existingPaths: ids.map((id) => join(configHome, id)),
+    agentEnv: { XDG_CONFIG_HOME: configHome },
+  });
+  expectSuccess(result);
+  assert.deepEqual(result.calls.map((call) => call.args), [addArgs(ids), listArgs(ids)]);
+});
+
+for (const configHome of ["relative-configuration-home", "  configuration home  "]) {
+  test(`installer preserves XDG_CONFIG_HOME ${JSON.stringify(configHome)} like the skills CLI`, (t) => {
+    const result = runInstaller(t, [], {
+      existingPaths: [join(configHome, "opencode")],
+      agentEnv: { XDG_CONFIG_HOME: configHome },
+    });
+    expectSuccess(result);
+    assert.deepEqual(result.calls.map((call) => call.args), [addArgs(["opencode"]), listArgs(["opencode"])]);
+  });
+}
+
+test("installer ignores default XDG directories when XDG_CONFIG_HOME is overridden", (t) => {
+  const result = runInstaller(t, ["--list"], {
+    agentPaths: [".config/opencode", ".config/amp", ".config/goose", ".config/crush"],
+    agentEnv: { XDG_CONFIG_HOME: join(temporaryDirectory(t), "missing configuration home") },
+  });
+  expectSuccess(result);
+  for (const id of ["opencode", "amp", "goose"]) {
+    assert.match(result.stdout, new RegExp(`^${id}\\s+not detected\\s+`, "m"));
+  }
+  assert.match(result.stdout, /^crush\s+detected\s+Crush$/m);
+  assert.deepEqual(result.calls, []);
+});
+
+test("installer uses the default XDG configuration home for an empty override", (t) => {
+  const ids = ["opencode", "amp", "goose"];
+  const result = runInstaller(t, [], {
+    agentPaths: ids.map((id) => `.config/${id}`),
+    agentEnv: { XDG_CONFIG_HOME: "" },
+  });
+  expectSuccess(result);
+  assert.deepEqual(result.calls.map((call) => call.args), [addArgs(ids), listArgs(ids)]);
+});
+
+for (const platform of ["linux", "win32"]) {
+  test(`installer detects GitHub Copilot by its copilot executable on ${platform}`, (t) => {
+    const result = runInstaller(t, ["--list"], { platform, commands: ["copilot"] });
+    expectSuccess(result);
+    assert.match(result.stdout, /^github-copilot\s+detected\s+GitHub Copilot$/m);
+    assert.ok(result.probes.some((call) => call.command === "copilot"));
+    assert.ok(result.probes.every((call) => call.command !== "github-copilot"));
+    assert.deepEqual(result.calls, []);
+  });
+}
+
+for (const command of ["kilo", "kilocode"]) {
+  test(`installer detects Kilo Code by its ${command} executable`, (t) => {
+    const result = runInstaller(t, [], { commands: [command] });
+    expectSuccess(result);
+    assert.deepEqual(result.calls.map((call) => call.args), [addArgs(["kilo"]), listArgs(["kilo"])]);
+  });
+}
+
+test("installer detects current Kilo Code by its .kilo configuration directory", (t) => {
+  const result = runInstaller(t, [], { agentPaths: [".kilo"] });
+  expectSuccess(result);
+  assert.deepEqual(result.calls.map((call) => call.args), [addArgs(["kilo"]), listArgs(["kilo"])]);
+});
+
+test("installer detects Windsurf by its standard configuration directory", (t) => {
+  const result = runInstaller(t, [], { agentPaths: [".codeium/windsurf"] });
+  expectSuccess(result);
+  assert.deepEqual(result.calls.map((call) => call.args), [addArgs(["windsurf"]), listArgs(["windsurf"])]);
 });
 
 for (const platform of ["linux", "win32"]) {

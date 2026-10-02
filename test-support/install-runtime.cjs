@@ -9,6 +9,10 @@ const config = JSON.parse(process.env.EVENHUB_INSTALL_TEST);
 
 Object.defineProperty(process, "platform", { value: config.platform });
 os.homedir = () => config.home;
+for (const name of ["CODEX_HOME", "CLAUDE_CONFIG_DIR", "XDG_CONFIG_HOME"]) {
+  if (config.agentEnv?.[name] !== undefined) process.env[name] = config.agentEnv[name];
+  else delete process.env[name];
+}
 if (config.appData) process.env.APPDATA = config.appData;
 else delete process.env.APPDATA;
 if (config.path !== undefined) process.env.PATH = config.path;

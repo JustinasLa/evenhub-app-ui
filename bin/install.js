@@ -8,24 +8,29 @@ import { fileURLToPath } from "node:url";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const skillNames = ["evenhub-app-ui", "evenhub-pixel-icons"];
+// Match the configuration roots used by the skills CLI.
+const home = homedir();
+const claudeHome = process.env.CLAUDE_CONFIG_DIR?.trim() || join(home, ".claude");
+const codexHome = process.env.CODEX_HOME?.trim() || join(home, ".codex");
+const configHome = process.env.XDG_CONFIG_HOME || join(home, ".config");
 
 const providers = [
-  { id: "claude-code", label: "Claude Code", commands: ["claude"], paths: [".claude"] },
-  { id: "codex", label: "Codex", commands: ["codex"], paths: [".codex"] },
-  { id: "cursor", label: "Cursor", commands: ["cursor"], paths: [".cursor"] },
-  { id: "windsurf", label: "Windsurf", commands: ["windsurf"], paths: [".windsurf"] },
-  { id: "cline", label: "Cline", commands: [], paths: [".cline"] },
-  { id: "gemini-cli", label: "Gemini CLI", commands: ["gemini"], paths: [".gemini"] },
-  { id: "opencode", label: "OpenCode", commands: ["opencode"], paths: [".config/opencode"] },
-  { id: "github-copilot", label: "GitHub Copilot", commands: ["github-copilot"], paths: [".copilot"] },
-  { id: "continue", label: "Continue", commands: ["cn"], paths: [".continue"] },
-  { id: "roo", label: "Roo Code", commands: [], paths: [".roo"] },
-  { id: "kilo", label: "Kilo Code", commands: ["kilocode"], paths: [".kilocode"] },
-  { id: "aider-desk", label: "AiderDesk", commands: ["aider-desk"], paths: [".aider-desk"] },
-  { id: "amp", label: "Amp", commands: ["amp"], paths: [".config/amp"] },
-  { id: "openclaw", label: "OpenClaw", commands: ["openclaw"], paths: [".openclaw"] },
-  { id: "goose", label: "Goose", commands: ["goose"], paths: [".config/goose"] },
-  { id: "crush", label: "Crush", commands: ["crush"], paths: [".config/crush"] },
+  { id: "claude-code", label: "Claude Code", commands: ["claude"], paths: [claudeHome] },
+  { id: "codex", label: "Codex", commands: ["codex"], paths: [codexHome] },
+  { id: "cursor", label: "Cursor", commands: ["cursor"], paths: [join(home, ".cursor")] },
+  { id: "windsurf", label: "Windsurf", commands: ["windsurf"], paths: [join(home, ".codeium/windsurf"), join(home, ".windsurf")] },
+  { id: "cline", label: "Cline", commands: [], paths: [join(home, ".cline")] },
+  { id: "gemini-cli", label: "Gemini CLI", commands: ["gemini"], paths: [join(home, ".gemini")] },
+  { id: "opencode", label: "OpenCode", commands: ["opencode"], paths: [join(configHome, "opencode")] },
+  { id: "github-copilot", label: "GitHub Copilot", commands: ["copilot"], paths: [join(home, ".copilot")] },
+  { id: "continue", label: "Continue", commands: ["cn"], paths: [join(home, ".continue")] },
+  { id: "roo", label: "Roo Code", commands: [], paths: [join(home, ".roo")] },
+  { id: "kilo", label: "Kilo Code", commands: ["kilo", "kilocode"], paths: [join(home, ".kilo"), join(home, ".kilocode")] },
+  { id: "aider-desk", label: "AiderDesk", commands: ["aider-desk"], paths: [join(home, ".aider-desk")] },
+  { id: "amp", label: "Amp", commands: ["amp"], paths: [join(configHome, "amp")] },
+  { id: "openclaw", label: "OpenClaw", commands: ["openclaw"], paths: [join(home, ".openclaw")] },
+  { id: "goose", label: "Goose", commands: ["goose"], paths: [join(configHome, "goose")] },
+  { id: "crush", label: "Crush", commands: ["crush"], paths: [join(home, ".config/crush")] },
 ];
 
 function commandExists(command) {
@@ -40,7 +45,7 @@ function commandExists(command) {
 function isDetected(provider) {
   return (
     provider.commands.some(commandExists) ||
-    provider.paths.some((path) => existsSync(join(homedir(), path)))
+    provider.paths.some(existsSync)
   );
 }
 
