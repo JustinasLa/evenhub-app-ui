@@ -52,8 +52,10 @@ there, simplify it rather than adding pixels.
 Run the bundled generator by resolving it from this skill directory:
 
 ```bash
-node <skill-dir>/scripts/grid2svg.mjs icon.grid --output "Icon Name.svg"
+node "<skill-dir>/scripts/grid2svg.mjs" icon.grid --output "Icon Name.svg"
 ```
+
+Replace `<skill-dir>` with the installed skill's path.
 
 The generator validates grid dimensions, characters, padding, and empty input.
 For a justified edge-to-edge design, pass `--allow-edge`.

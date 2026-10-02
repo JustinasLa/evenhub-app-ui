@@ -49,8 +49,10 @@ Most changes touch Markdown (`SKILL.md`, `references/`) or SVG assets. To test a
 skill change end to end, load your working copy into your agent:
 
 ```bash
-# Claude Code: copy the skill folder into a skills directory
-cp -r skills/evenhub-app-ui ~/.claude/skills/evenhub-app-ui
+# Claude Code: copy both complete skill folders into a skills directory
+mkdir -p ~/.claude/skills/evenhub-app-ui ~/.claude/skills/evenhub-pixel-icons
+cp -R skills/evenhub-app-ui/. ~/.claude/skills/evenhub-app-ui/
+cp -R skills/evenhub-pixel-icons/. ~/.claude/skills/evenhub-pixel-icons/
 
 # or install everything the way users do
 node bin/install.js --force
@@ -120,7 +122,7 @@ Keep changes consistent with the existing content:
   SVGs, including their original spelling. Custom icons live in
   [`icons/custom/`](../icons/custom/) instead.
 - **Guideline text must trace to the source.** The references are distilled from
-  the public Figma file "Even Realities – Software Design Guidelines"; don't add
+  the public Figma file ["Even Realities – Software Design Guidelines"](https://www.figma.com/design/X82y5uJvqMH95jgOfmV34j/Even-Realities---Software-Design-Guidelines--Public-?node-id=2922-80782); don't add
   rules, tokens, or metrics that aren't in it.
 - **Both skills stay in sync.** If a change affects icon rules, check
   `skills/evenhub-app-ui/references/iconography.md` and

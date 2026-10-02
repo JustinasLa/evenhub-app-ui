@@ -41,8 +41,7 @@ menu variants use their source filled treatment. Preserve each asset as
 exported rather than inferring a universal outline or fill rule.
 
 ### Menu Bar Icons (8)
-Home Menu, Home Menu - Highlighted*, Health Menu, Health Menu - Highlighted, Even hub Menu, Even hub Menu - Highlighted, Me-Account Menu, Me-Account Menu - Highlighted
-(*file name in set: "Home Menu - Hightlted" spelling follows source)
+Home Menu, Home Menu - Highlighted, Health Menu, Health Menu - Highlighted, Even hub Menu, Even hub Menu - Highlighted, Me-Account Menu, Me-Account Menu - Highlighted
 
 ### Feature & Function Icons (42)
 3D Facial Scan, Access Control, Account, Calendar, Camera, Direct Push, EIS, Email, Even AI, Feedback, HeadUp Angle, InBox, Interface Settings, Languages, Learn and Explore, Menu, Message, Navigate, News, Notification, Personal Info, Phone Call, Phone Voice Input, Privacy, QR Code, QuickNote, Scan, Screen off, Services, Stocks, Study, Teleprompt, Theme, Time Counting, Toggle Off, Toggle On, Transcribe, Translate, Voice Print, Weat Detect (Wear Detect), Weather, Wiki
