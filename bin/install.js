@@ -5,9 +5,11 @@ import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { stripVTControlCharacters } from "node:util";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const skillNames = ["evenhub-app-ui", "evenhub-pixel-icons"];
+const skillsPackage = "skills@1.7.0";
 // Match the configuration roots used by the skills CLI.
 const home = homedir();
 const claudeHome = process.env.CLAUDE_CONFIG_DIR?.trim() || join(home, ".claude");
@@ -116,14 +118,46 @@ function selectProviders(options) {
 }
 
 function quote(value) {
-  if (/^[a-zA-Z0-9_./:-]+$/.test(value)) return value;
+  if (/^[a-zA-Z0-9_./:-][a-zA-Z0-9_./:@-]*$/.test(value)) return value;
   // Previews use POSIX shell syntax on Unix and PowerShell syntax on Windows.
   return process.platform === "win32"
     ? `'${value.replace(/'/g, "''")}'`
     : `'${value.replace(/'/g, "'\\''")}'`;
 }
 
-function runNpx(args, dryRun) {
+function requireSupportedNode() {
+  const [major, minor] = process.versions.node.split(".").map(Number);
+  if (major < 22 || (major === 22 && minor < 20)) {
+    throw new Error(`Node.js 22.20.0 or newer is required; found ${process.versions.node}.`);
+  }
+}
+
+function validateInstallation(output, selected) {
+  let results;
+  try {
+    results = JSON.parse(output);
+  } catch {
+    throw new Error("skills CLI returned invalid installation results");
+  }
+  if (!Array.isArray(results)) {
+    throw new Error("skills CLI returned invalid installation results");
+  }
+
+  for (const name of skillNames) {
+    const outcome = results.find((result) => result?.name === name);
+    if (outcome?.status !== "installed") {
+      throw new Error(`failed to install ${name}: ${outcome?.error ?? "missing successful installation result"}`);
+    }
+    const missingAgents = selected.filter(
+      ({ label }) => !Array.isArray(outcome.agents) || !outcome.agents.includes(label),
+    );
+    if (missingAgents.length) {
+      throw new Error(`failed to install ${name} for: ${missingAgents.map(({ label }) => label).join(", ")}`);
+    }
+  }
+}
+
+function runNpx(args, dryRun, installationAgents) {
   console.log(`> npx ${args.map(quote).join(" ")}`);
   if (dryRun) return;
 
@@ -150,10 +184,24 @@ function runNpx(args, dryRun) {
 
   // Invoke npx-cli.js through Node on Windows. This avoids both the EINVAL
   // raised by direct .cmd execution and cmd.exe splitting paths at spaces.
-  const result = spawnSync(executable, executableArgs, {
-    stdio: "inherit",
-  });
+  const removing = args.includes("remove");
+  const result = spawnSync(executable, executableArgs, installationAgents
+    ? { stdio: ["inherit", "pipe", "inherit"], encoding: "utf8" }
+    : removing
+      ? { stdio: ["inherit", "pipe", "pipe"], encoding: "utf8" }
+      : { stdio: "inherit" });
   if (result.error) throw result.error;
+  if (removing) {
+    if (result.stdout) process.stdout.write(result.stdout);
+    if (result.stderr) process.stderr.write(result.stderr);
+    // skills@1.7.0 reports per-agent removal failures without setting its exit code.
+    const failure = stripVTControlCharacters((result.stdout ?? "") + (result.stderr ?? ""))
+      .match(/(?:Could not remove skill from|Failed to remove)[^\r\n]*/);
+    if (failure) throw new Error(failure[0]);
+  }
+  if (installationAgents && (result.status === 0 || result.stdout)) {
+    validateInstallation(result.stdout, installationAgents);
+  }
   if (result.status !== 0) {
     throw new Error(`skills CLI exited with status ${result.status}`);
   }
@@ -165,6 +213,7 @@ function main() {
     printProviders();
     return;
   }
+  requireSupportedNode();
 
   const selected = selectProviders(options);
   if (!selected.length) {
@@ -184,7 +233,7 @@ function main() {
     runNpx(
       [
         "-y",
-        "skills",
+        skillsPackage,
         "remove",
         ...skillNames,
         "--global",
@@ -199,7 +248,7 @@ function main() {
   runNpx(
     [
       "-y",
-      "skills",
+      skillsPackage,
       "add",
       repoRoot,
       "--skill",
@@ -208,17 +257,19 @@ function main() {
       ...agentArgs,
       "--copy",
       "--yes",
+      "--json",
     ],
     options.dryRun,
+    selected,
   );
 
   if (options.dryRun) {
     console.log("Dry run complete; no files were changed.");
   } else {
     console.log("Installed evenhub-app-ui and evenhub-pixel-icons.");
-    console.log("Verifying global skill registrations:");
+    console.log("Global skill registrations:");
     runNpx(
-      ["-y", "skills", "list", "--global", ...agentArgs],
+      ["-y", skillsPackage, "list", "--global", ...agentArgs],
       false,
     );
     console.log("Restart each agent or begin a new session before testing.");

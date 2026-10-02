@@ -4,13 +4,16 @@ set -euo pipefail
 REPO="JustinasLa/evenhub-app-ui"
 
 if ! command -v node >/dev/null 2>&1; then
-  echo "evenhub-app-ui: Node.js 18 or newer is required." >&2
+  echo "evenhub-app-ui: Node.js 22.20.0 or newer is required." >&2
   exit 1
 fi
 
-NODE_MAJOR="$(node -p "process.versions.node.split('.')[0]")"
-if [ "$NODE_MAJOR" -lt 18 ]; then
-  echo "evenhub-app-ui: Node.js 18 or newer is required; found $NODE_MAJOR." >&2
+NODE_VERSION="$(node -p "process.versions.node")"
+NODE_MAJOR="${NODE_VERSION%%.*}"
+NODE_MINOR="${NODE_VERSION#*.}"
+NODE_MINOR="${NODE_MINOR%%.*}"
+if [ "$NODE_MAJOR" -lt 22 ] || { [ "$NODE_MAJOR" -eq 22 ] && [ "$NODE_MINOR" -lt 20 ]; }; then
+  echo "evenhub-app-ui: Node.js 22.20.0 or newer is required; found $NODE_VERSION." >&2
   exit 1
 fi
 

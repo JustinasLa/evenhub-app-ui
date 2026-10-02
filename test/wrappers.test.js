@@ -35,7 +35,7 @@ const shellPath = (path) => process.platform === "win32"
   ? path.replace(/\\/g, "/").replace(/^([A-Za-z]):/, (_, drive) => `/${drive.toLowerCase()}`)
   : path;
 
-function runBash(t, { node = true, npx = true, major = 24, status = 0, local = false, bare = false, downloaded = false, args = [] } = {}) {
+function runBash(t, { node = true, npx = true, version = "24.0.0", status = 0, local = false, bare = false, downloaded = false, args = [] } = {}) {
   const directory = temporaryDirectory(t);
   const commands = join(directory, "mock commands");
   const callsFile = join(directory, "calls.log");
@@ -43,7 +43,7 @@ function runBash(t, { node = true, npx = true, major = 24, status = 0, local = f
   for (const [command, enabled] of [["node", node], ["npx", npx]]) {
     if (!enabled) continue;
     const path = join(commands, command);
-    writeFileSync(path, `#!/bin/bash\nif [ "$1" = "-p" ]; then\n  printf '%s\\n' "$EVENHUB_NODE_MAJOR"\n  exit 0\nfi\nprintf '%s\\0' '${command}' "$@" >> "$EVENHUB_WRAPPER_CALLS"\nexit "$EVENHUB_WRAPPER_STATUS"\n`);
+    writeFileSync(path, `#!/bin/bash\nif [ "$1" = "-p" ]; then\n  printf '%s\\n' "$EVENHUB_NODE_VERSION"\n  exit 0\nfi\nprintf '%s\\0' '${command}' "$@" >> "$EVENHUB_WRAPPER_CALLS"\nexit "$EVENHUB_WRAPPER_STATUS"\n`);
     chmodSync(path, 0o755);
   }
   const wrapper = join(directory, "install.sh");
@@ -65,7 +65,7 @@ function runBash(t, { node = true, npx = true, major = 24, status = 0, local = f
       EVENHUB_WRAPPER_SCRIPT: bare ? "install.sh" : shellPath(wrapper),
       EVENHUB_WRAPPER_SOURCE: readFileSync(wrapper, "utf8"),
       EVENHUB_WRAPPER_CALLS: shellPath(callsFile),
-      EVENHUB_NODE_MAJOR: String(major),
+      EVENHUB_NODE_VERSION: version,
       EVENHUB_WRAPPER_STATUS: String(status),
     },
   });
@@ -79,21 +79,23 @@ const bashTest = (name, fn) => test(name, { skip: !bash && "Bash is unavailable"
 bashTest("Bash wrapper reports missing Node without invoking npx", (t) => {
   const result = runBash(t, { node: false });
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /Node\.js 18 or newer is required\./);
+  assert.match(result.stderr, /Node\.js 22\.20\.0 or newer is required\./);
   assert.deepEqual(result.calls, []);
 });
 
-bashTest("Bash wrapper rejects Node versions below 18", (t) => {
-  const result = runBash(t, { major: 17 });
-  assert.equal(result.status, 1);
-  assert.match(result.stderr, /Node\.js 18 or newer is required; found 17\./);
-  assert.deepEqual(result.calls, []);
-});
+for (const version of ["18.20.8", "22.19.0"]) {
+  bashTest(`Bash wrapper rejects Node ${version}`, (t) => {
+    const result = runBash(t, { version });
+    assert.equal(result.status, 1);
+    assert.ok(result.stderr.includes(`Node.js 22.20.0 or newer is required; found ${version}.`));
+    assert.deepEqual(result.calls, []);
+  });
+}
 
 for (const bare of [false, true]) {
   bashTest(`Bash wrapper uses the local installer (${bare ? "bare" : "absolute"} script path) and forwards arguments`, (t) => {
     const args = ["--only", "codex", "argument with spaces", "--dry-run"];
-    const result = runBash(t, { local: true, bare, major: 18, npx: false, args });
+    const result = runBash(t, { local: true, bare, version: "22.20.0", npx: false, args });
     assert.equal(result.status, 0, result.stderr);
     assert.equal(result.stderr, "");
     const localPath = bare ? "./bin/install.js" : shellPath(result.wrapper).replace(/install\.sh$/, "bin/install.js");
@@ -134,7 +136,7 @@ function runPowerShell(powershell, t, overrides = {}) {
     callsFile,
     node: true,
     npx: "cmd",
-    major: 24,
+    version: "24.0.0",
     status: 0,
     local: false,
     downloaded: false,
@@ -161,20 +163,22 @@ const psTest = (name, fn) => {
 psTest("PowerShell wrapper reports missing Node without invoking npx", (t, powershell) => {
   const result = runPowerShell(powershell, t, { node: false });
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /Node\.js 18 or newer is required\./);
+  assert.match(result.stderr, /Node\.js 22\.20\.0 or newer is required\./);
   assert.deepEqual(result.calls, []);
 });
 
-psTest("PowerShell wrapper rejects Node versions below 18", (t, powershell) => {
-  const result = runPowerShell(powershell, t, { major: 17 });
-  assert.equal(result.status, 1);
-  assert.match(result.stderr, /Node\.js 18 or newer is required; found 17\./);
-  assert.deepEqual(result.calls, []);
-});
+for (const version of ["18.20.8", "22.19.0"]) {
+  psTest(`PowerShell wrapper rejects Node ${version}`, (t, powershell) => {
+    const result = runPowerShell(powershell, t, { version });
+    assert.equal(result.status, 1);
+    assert.ok(result.stderr.includes(`Node.js 22.20.0 or newer is required; found ${version}.`));
+    assert.deepEqual(result.calls, []);
+  });
+}
 
 psTest("PowerShell wrapper uses the local installer and forwards arguments without requiring npx", (t, powershell) => {
   const args = ["--only", "codex", "argument with spaces", "--dry-run"];
-  const result = runPowerShell(powershell, t, { local: true, major: 18, npx: null, args });
+  const result = runPowerShell(powershell, t, { local: true, version: "22.20.0", npx: null, args });
   assert.equal(result.status, 0, result.stderr);
   assert.equal(result.stderr, "");
   assert.deepEqual(result.calls, [{ command: "node", args: [join(repoRoot, "bin/install.js"), ...args] }]);
