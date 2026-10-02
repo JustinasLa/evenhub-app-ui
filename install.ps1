@@ -20,6 +20,9 @@ function Install-EvenHubAppUI {
         $localInstaller = Join-Path (Split-Path -Parent $PSCommandPath) "bin\install.js"
         if (Test-Path -LiteralPath $localInstaller) {
             & node $localInstaller @InstallerArgs
+            if ($LASTEXITCODE -ne 0) {
+                throw "evenhub-app-ui: installer exited with status $LASTEXITCODE."
+            }
             return
         }
     }
@@ -34,6 +37,9 @@ function Install-EvenHubAppUI {
     }
 
     & $npx.Source -y "github:$repo" @InstallerArgs
+    if ($LASTEXITCODE -ne 0) {
+        throw "evenhub-app-ui: installer exited with status $LASTEXITCODE."
+    }
 }
 
 Install-EvenHubAppUI -InstallerArgs $args
