@@ -85,8 +85,9 @@ install or remove real skills. Converter tests use temporary grids and compare
 the SVG's pixels with the input. Bash and PowerShell wrapper tests cover local
 and downloaded installation, argument forwarding, prerequisites, and failures.
 They run when their shell is available; CI requires Bash on Linux and Windows,
-and PowerShell on Windows. The numeric coverage gate applies to JavaScript;
-the shell wrappers have behavioral tests.
+and both PowerShell Core and Windows PowerShell 5.1 on Windows. Each available
+PowerShell implementation runs the same wrapper cases. The numeric coverage gate
+applies to JavaScript; the shell wrappers have behavioral tests.
 
 The installer preview must pass clean. For icon changes, also verify the
 skill's checklist: 32×32 viewBox, single `#232323` fill, no `stroke`, no curve

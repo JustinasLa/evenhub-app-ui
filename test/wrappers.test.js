@@ -17,14 +17,18 @@ const bash = findExecutable(process.platform === "win32"
   : ["bash"]);
 // Windows PowerShell 5.1 uses a different version flag from pwsh.
 const powershellCandidates = process.platform === "win32" ? ["pwsh", "powershell.exe"] : ["pwsh"];
-const powershell = powershellCandidates.find((command) => {
+const powershells = powershellCandidates.filter((command) => {
   const probe = spawnSync(command, ["-NoLogo", "-NoProfile", "-NonInteractive", "-Command", "$PSVersionTable.PSVersion.ToString()"], { encoding: "utf8", timeout: 10_000 });
   return !probe.error && probe.status === 0;
 });
 
 if (process.env.CI) {
   assert.ok(bash, "CI must provide Bash to test install.sh");
-  if (process.platform === "win32") assert.ok(powershell, "Windows CI must provide PowerShell to test install.ps1");
+  if (process.platform === "win32") {
+    for (const command of powershellCandidates) {
+      assert.ok(powershells.includes(command), `Windows CI must provide ${command} to test install.ps1`);
+    }
+  }
 }
 
 const shellPath = (path) => process.platform === "win32"
@@ -122,7 +126,7 @@ for (const local of [false, true]) {
   });
 }
 
-function runPowerShell(t, overrides = {}) {
+function runPowerShell(powershell, t, overrides = {}) {
   const directory = temporaryDirectory(t);
   const callsFile = join(directory, "calls.jsonl");
   const config = {
@@ -148,25 +152,29 @@ function runPowerShell(t, overrides = {}) {
   return { ...result, calls };
 }
 
-const psTest = (name, fn) => test(name, { skip: !powershell && "PowerShell is unavailable" }, fn);
+const psTest = (name, fn) => {
+  for (const powershell of powershellCandidates) {
+    test(`${name} (${powershell})`, { skip: !powershells.includes(powershell) && `${powershell} is unavailable` }, (t) => fn(t, powershell));
+  }
+};
 
-psTest("PowerShell wrapper reports missing Node without invoking npx", (t) => {
-  const result = runPowerShell(t, { node: false });
+psTest("PowerShell wrapper reports missing Node without invoking npx", (t, powershell) => {
+  const result = runPowerShell(powershell, t, { node: false });
   assert.equal(result.status, 1);
   assert.match(result.stderr, /Node\.js 18 or newer is required\./);
   assert.deepEqual(result.calls, []);
 });
 
-psTest("PowerShell wrapper rejects Node versions below 18", (t) => {
-  const result = runPowerShell(t, { major: 17 });
+psTest("PowerShell wrapper rejects Node versions below 18", (t, powershell) => {
+  const result = runPowerShell(powershell, t, { major: 17 });
   assert.equal(result.status, 1);
   assert.match(result.stderr, /Node\.js 18 or newer is required; found 17\./);
   assert.deepEqual(result.calls, []);
 });
 
-psTest("PowerShell wrapper uses the local installer and forwards arguments without requiring npx", (t) => {
+psTest("PowerShell wrapper uses the local installer and forwards arguments without requiring npx", (t, powershell) => {
   const args = ["--only", "codex", "argument with spaces", "--dry-run"];
-  const result = runPowerShell(t, { local: true, major: 18, npx: null, args });
+  const result = runPowerShell(powershell, t, { local: true, major: 18, npx: null, args });
   assert.equal(result.status, 0, result.stderr);
   assert.equal(result.stderr, "");
   assert.deepEqual(result.calls, [{ command: "node", args: [join(repoRoot, "bin/install.js"), ...args] }]);
@@ -174,9 +182,9 @@ psTest("PowerShell wrapper uses the local installer and forwards arguments witho
 
 for (const downloaded of [false, true]) {
   for (const npx of ["cmd", "plain"]) {
-    psTest(`PowerShell wrapper invokes ${npx === "cmd" ? "npx.cmd" : "npx"} (${downloaded ? "downloaded" : "file without local installer"})`, (t) => {
+    psTest(`PowerShell wrapper invokes ${npx === "cmd" ? "npx.cmd" : "npx"} (${downloaded ? "downloaded" : "file without local installer"})`, (t, powershell) => {
       const args = ["--only", "codex", "argument with spaces", "--dry-run"];
-      const result = runPowerShell(t, { npx, downloaded, args });
+      const result = runPowerShell(powershell, t, { npx, downloaded, args });
       assert.equal(result.status, 0, result.stderr);
       assert.equal(result.stderr, "");
       assert.deepEqual(result.calls, [{ command: npx === "cmd" ? "npx.cmd" : "npx", args: ["-y", "github:JustinasLa/evenhub-app-ui", ...args] }]);
@@ -184,22 +192,22 @@ for (const downloaded of [false, true]) {
   }
 }
 
-psTest("PowerShell wrapper reports missing npx for remote installation", (t) => {
-  const result = runPowerShell(t, { npx: null });
+psTest("PowerShell wrapper reports missing npx for remote installation", (t, powershell) => {
+  const result = runPowerShell(powershell, t, { npx: null });
   assert.equal(result.status, 1);
   assert.match(result.stderr, /npx is required and normally ships with Node\.js\./);
   assert.deepEqual(result.calls, []);
 });
 
-psTest("PowerShell wrapper prefers npx.cmd when both npm commands exist", (t) => {
-  const result = runPowerShell(t, { npx: "both" });
+psTest("PowerShell wrapper prefers npx.cmd when both npm commands exist", (t, powershell) => {
+  const result = runPowerShell(powershell, t, { npx: "both" });
   assert.equal(result.status, 0, result.stderr);
   assert.deepEqual(result.calls, [{ command: "npx.cmd", args: ["-y", "github:JustinasLa/evenhub-app-ui"] }]);
 });
 
 for (const local of [false, true]) {
-  psTest(`PowerShell wrapper reports ${local ? "local" : "remote"} installer failure`, (t) => {
-    const result = runPowerShell(t, { local, status: 7 });
+  psTest(`PowerShell wrapper reports ${local ? "local" : "remote"} installer failure`, (t, powershell) => {
+    const result = runPowerShell(powershell, t, { local, status: 7 });
     assert.equal(result.status, 1);
     assert.match(result.stderr, /installer exited with status 7/);
     assert.equal(result.calls.length, 1);
