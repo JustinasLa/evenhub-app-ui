@@ -11,6 +11,8 @@ Object.defineProperty(process, "platform", { value: config.platform });
 os.homedir = () => config.home;
 if (config.appData) process.env.APPDATA = config.appData;
 else delete process.env.APPDATA;
+if (config.path !== undefined) process.env.PATH = config.path;
+else delete process.env.PATH;
 fs.existsSync = (path) => config.existingPaths.includes(path);
 if (config.repoRoot) url.fileURLToPath = () => join(config.repoRoot, "bin", "install.js");
 
