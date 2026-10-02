@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, linkSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { test } from "node:test";
 import { converter, runNode, temporaryDirectory } from "../test-support/cli.js";
 
@@ -64,6 +64,26 @@ for (const flag of ["--output", "-o"]) {
   test(`converter ${flag} requires an output path`, () => {
     expectError(runNode(converter, [flag]), `error: ${flag} requires a file path`);
   });
+
+  for (const option of ["--allow-edge", "--unknown", "--output", "-o", "--help", "-h"]) {
+    test(`converter ${flag} rejects ${option} as an output operand without changing files`, (t) => {
+      const directory = temporaryDirectory(t);
+      const input = join(directory, "input.grid");
+      const source = Buffer.from(gridWith([4, 4]).join("\n"));
+      const output = join(directory, option);
+      const existing = Buffer.from("keep this file\0\xff", "latin1");
+      writeFileSync(input, source);
+      writeFileSync(output, existing);
+      const files = readdirSync(directory);
+
+      const result = runNode(converter, [input, flag, option], { cwd: directory });
+
+      expectError(result, `error: ${flag} requires a file path`);
+      assert.deepEqual(readFileSync(input), source);
+      assert.deepEqual(readFileSync(output), existing);
+      assert.deepEqual(readdirSync(directory), files);
+    });
+  }
 }
 
 test("converter rejects unknown options", () => {
@@ -137,6 +157,44 @@ for (const ending of ["", "\n", "\n\n\n", "\r\n", "\r\n\r\n"]) {
   });
 }
 
+for (const separator of ["\n", "\r\n"]) {
+  test(`converter accepts one initial UTF-8 BOM with ${JSON.stringify(separator)} rows`, (t) => {
+    const grid = gridWith([3, 4]);
+    const source = `\uFEFF${grid.join(separator)}${separator}`;
+    const input = inputFile(t, source);
+    const result = runNode(converter, [input]);
+
+    assert.equal(result.status, 0, result.stderr);
+    assertPixels(result.stdout, grid);
+    assert.equal(readFileSync(input, "utf8"), source);
+  });
+}
+
+for (const location of ["repeated initial", "interior"]) {
+  test(`converter rejects an invalid UTF-8 BOM (${location}) without changing an existing output`, (t) => {
+    const grid = gridWith([4, 4]);
+    let source;
+    let message;
+    if (location === "repeated initial") {
+      source = `\uFEFF\uFEFF${grid.join("\n")}`;
+      message = "row 1 must have 16 cells; found 17";
+    } else {
+      grid[7] = ".......\uFEFF........";
+      source = grid.join("\n");
+      message = 'row 8 contains characters other than "#" and "."';
+    }
+    const input = inputFile(t, source);
+    const output = join(temporaryDirectory(t), "existing.svg");
+    const existing = Buffer.from("keep this file\0\xff", "latin1");
+    writeFileSync(output, existing);
+
+    expectError(runNode(converter, [input, "--output", output]), message);
+
+    assert.equal(readFileSync(input, "utf8"), source);
+    assert.deepEqual(readFileSync(output), existing);
+  });
+}
+
 test("converter supports a completely filled grid with --allow-edge", (t) => {
   const grid = Array(16).fill("################");
   const result = runNode(converter, ["--allow-edge", inputFile(t, grid.join("\n"))]);
@@ -156,6 +214,52 @@ for (const flag of ["--output", "-o"]) {
     assert.equal(assertPixels(readFileSync(output, "utf8"), grid), 1);
   });
 }
+
+test("converter supports an output filename beginning with a dash through an explicit relative path", (t) => {
+  const directory = temporaryDirectory(t);
+  const grid = gridWith([4, 4]);
+  const input = join(directory, "input.grid");
+  writeFileSync(input, grid.join("\n"));
+
+  const result = runNode(converter, [input, "--output", "./-icon.svg"], { cwd: directory });
+
+  assert.equal(result.status, 0, result.stderr);
+  assertPixels(readFileSync(join(directory, "-icon.svg"), "utf8"), grid);
+});
+
+for (const alias of ["same path", "normalized path", "hard link"]) {
+  test(`converter preserves the source grid when output uses the ${alias}`, (t) => {
+    const source = Buffer.from(gridWith([4, 4]).join("\n"));
+    const input = inputFile(t, source);
+    let output = input;
+    if (alias === "normalized path") {
+      mkdirSync(join(dirname(input), "nested"));
+      output = `${dirname(input)}/nested/../input with spaces.grid`;
+    } else if (alias === "hard link") {
+      output = join(dirname(input), "alias.svg");
+      linkSync(input, output);
+    }
+
+    expectError(runNode(converter, [input, "--output", output]), "output must not overwrite the input grid");
+
+    assert.deepEqual(readFileSync(input), source);
+    assert.deepEqual(readFileSync(output), source);
+  });
+}
+
+test("converter still regenerates an existing SVG without changing the source grid", (t) => {
+  const grid = gridWith([4, 4]);
+  const source = Buffer.from(grid.join("\n"));
+  const input = inputFile(t, source);
+  const output = join(dirname(input), "existing.svg");
+  writeFileSync(output, "old SVG");
+
+  const result = runNode(converter, [input, "--output", output]);
+
+  assert.equal(result.status, 0, result.stderr);
+  assertPixels(readFileSync(output, "utf8"), grid);
+  assert.deepEqual(readFileSync(input), source);
+});
 
 test("converter reports output write failures", (t) => {
   const output = join(temporaryDirectory(t), "missing directory", "icon.svg");

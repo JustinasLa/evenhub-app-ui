@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, statSync, writeFileSync } from "node:fs";
 
 const SIZE = 16;
 const UNIT = 2;
@@ -18,22 +18,22 @@ function exitWith(message) {
 }
 
 const args = process.argv.slice(2);
-if (args.includes("--help") || args.includes("-h")) {
-  usage();
-  process.exit(0);
-}
-
 let input;
 let output;
 let allowEdge = false;
 
 for (let index = 0; index < args.length; index++) {
   const argument = args[index];
-  if (argument === "--allow-edge") {
+  if (argument === "--help" || argument === "-h") {
+    usage();
+    process.exit(0);
+  } else if (argument === "--allow-edge") {
     allowEdge = true;
   } else if (argument === "--output" || argument === "-o") {
     output = args[++index];
-    if (!output) exitWith(`${argument} requires a file path`);
+    if (!output || output.startsWith("-")) {
+      exitWith(`${argument} requires a file path`);
+    }
   } else if (argument.startsWith("-")) {
     exitWith(`unknown option: ${argument}`);
   } else if (input) {
@@ -55,8 +55,8 @@ try {
   exitWith(`cannot read ${input}: ${error.message}`);
 }
 
-// Remove terminal newlines only. Blank rows inside the grid remain invalid.
-const lines = source.replace(/(?:\r?\n)+$/, "").split(/\r?\n/);
+// Accept one initial UTF-8 BOM and terminal newlines. Interior blanks remain invalid.
+const lines = source.replace(/^\uFEFF/, "").replace(/(?:\r?\n)+$/, "").split(/\r?\n/);
 
 if (lines.length !== SIZE) {
   exitWith(`grid must have ${SIZE} rows; found ${lines.length}`);
@@ -114,6 +114,12 @@ const svg = [
 
 if (output) {
   try {
+    const inputStat = statSync(input, { bigint: true });
+    const outputStat = statSync(output, { bigint: true, throwIfNoEntry: false });
+    // File identity also catches hard links, symlinks, and differently cased paths.
+    if (outputStat && `${inputStat.dev}:${inputStat.ino}` === `${outputStat.dev}:${outputStat.ino}`) {
+      exitWith("output must not overwrite the input grid");
+    }
     writeFileSync(output, svg, "utf8");
   } catch (error) {
     exitWith(`cannot write ${output}: ${error.message}`);
