@@ -21,5 +21,23 @@
   ],
   "engines": {
     "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:coverage": "c8 node --test"
+  },
+  "c8": {
+    "all": true,
+    "include": ["**/*.js", "**/*.mjs", "**/*.cjs"],
+    "exclude": ["test/**", "test-support/**", "node_modules/**", "coverage/**"],
+    "reporter": ["text", "html", "lcov", "json-summary"],
+    "check-coverage": true,
+    "lines": 100,
+    "statements": 100,
+    "functions": 100,
+    "branches": 100
+  },
+  "devDependencies": {
+    "c8": "^10.1.3"
   }
 }

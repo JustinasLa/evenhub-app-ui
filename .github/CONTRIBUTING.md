@@ -27,6 +27,8 @@ through a pull request.
 ## 2. Confirm a clean starting point
 
 ```bash
+npm ci
+npm run test:coverage
 node bin/install.js --list
 node bin/install.js --dry-run
 ```
@@ -68,8 +70,24 @@ node skills/evenhub-pixel-icons/scripts/grid2svg.mjs my-icon.grid --output "icon
 ## 5. Verify before committing
 
 ```bash
+npm run test:coverage
 node bin/install.js --dry-run
 ```
+
+The test suite uses Node's built-in test runner. `npm test` runs the tests;
+`npm run test:coverage` also requires 100% statements, branches, functions, and
+lines across all production JavaScript, including files not imported by tests.
+Open `coverage/index.html` to inspect the report. Generated coverage files are
+not committed.
+
+Installer tests replace agent detection and subprocess calls, so they never
+install or remove real skills. Converter tests use temporary grids and compare
+the SVG's pixels with the input. Bash and PowerShell wrapper tests cover local
+and downloaded installation, argument forwarding, prerequisites, and failures.
+They run when their shell is available; CI requires Bash on Linux and Windows,
+and both PowerShell Core and Windows PowerShell 5.1 on Windows. Each available
+PowerShell implementation runs the same wrapper cases. The numeric coverage gate
+applies to JavaScript; the shell wrappers have behavioral tests.
 
 The installer preview must pass clean. For icon changes, also verify the
 skill's checklist: 32×32 viewBox, single `#232323` fill, no `stroke`, no curve
