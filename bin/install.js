@@ -111,10 +111,17 @@ function selectProviders(options) {
 }
 
 function quote(value) {
-  return /\s/.test(value) ? JSON.stringify(value) : value;
+  if (/^[a-zA-Z0-9_./:-]+$/.test(value)) return value;
+  // Previews use POSIX shell syntax on Unix and PowerShell syntax on Windows.
+  return process.platform === "win32"
+    ? `'${value.replace(/'/g, "''")}'`
+    : `'${value.replace(/'/g, "'\\''")}'`;
 }
 
 function runNpx(args, dryRun) {
+  console.log(`> npx ${args.map(quote).join(" ")}`);
+  if (dryRun) return;
+
   let executable = "npx";
   let executableArgs = args;
 
@@ -124,6 +131,9 @@ function runNpx(args, dryRun) {
       process.env.APPDATA
         ? join(process.env.APPDATA, "npm", "node_modules", "npm", "bin", "npx-cli.js")
         : "",
+      ...(process.env.PATH || "").split(";").filter(Boolean).map((path) =>
+        join(path.replace(/^"(.*)"$/, "$1"), "node_modules", "npm", "bin", "npx-cli.js"),
+      ),
     ].filter(Boolean);
     const npxCli = candidates.find(existsSync);
     if (!npxCli) {
@@ -132,9 +142,6 @@ function runNpx(args, dryRun) {
     executable = process.execPath;
     executableArgs = [npxCli, ...args];
   }
-
-  console.log(`> npx ${args.map(quote).join(" ")}`);
-  if (dryRun) return;
 
   // Invoke npx-cli.js through Node on Windows. This avoids both the EINVAL
   // raised by direct .cmd execution and cmd.exe splitting paths at spaces.

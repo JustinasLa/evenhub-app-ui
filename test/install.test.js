@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { spawnSync } from "node:child_process";
 import { test } from "node:test";
 import { installer, repoRoot, runNode, temporaryDirectory } from "../test-support/cli.js";
 
@@ -143,9 +144,33 @@ test("installer quotes repository paths containing spaces in previews and passes
   const root = join(temporaryDirectory(t), "repository with spaces");
   const result = runInstaller(t, ["--only", "codex"], { repoRoot: root });
   expectSuccess(result);
-  assert.ok(result.stdout.includes(`> npx -y skills add ${JSON.stringify(root)} --skill *`));
+  assert.ok(result.stdout.includes(`> npx -y skills add '${root}' --skill '*'`));
   assert.equal(result.calls[0].args[3], root);
 });
+
+const bash = process.platform === "win32"
+  ? join(process.env.ProgramFiles || "C:/Program Files", "Git/bin/bash.exe")
+  : "bash";
+const powershell = process.platform === "win32" ? "powershell.exe" : "pwsh";
+for (const [platform, shell, probe, runner] of [
+  ["linux", bash, ["-c", "exit 0"], (command) => ["--noprofile", "--norc", "-c", `npx() { printf '%s\\0' "$@"; }\n${command}`]],
+  ["win32", powershell, ["-NoProfile", "-NonInteractive", "-Command", "exit 0"], (command) => ["-NoProfile", "-NonInteractive", "-Command", `function npx { ConvertTo-Json -Compress -InputObject @($args) }\n${command}`]],
+]) {
+  const available = spawnSync(shell, probe, { timeout: 10_000 }).status === 0;
+  test(`installer ${platform} preview preserves literal arguments in its shell`, { skip: !available && `${shell} is unavailable` }, (t) => {
+    const root = join(temporaryDirectory(t), "repository 'quote $HOME `echo changed` & value");
+    const result = runInstaller(t, ["--only", "codex", "--dry-run"], { platform, repoRoot: root });
+    expectSuccess(result);
+    const command = result.stdout.split(/\r?\n/).find((line) => line.startsWith("> npx ")).slice(2);
+    const replay = spawnSync(shell, runner(command), { cwd: repoRoot, encoding: "utf8", timeout: 10_000 });
+    expectSuccess(replay);
+    const args = platform === "win32" ? JSON.parse(replay.stdout) : replay.stdout.split("\0").slice(0, -1);
+    const expected = addArgs(["codex"]);
+    expected[3] = root;
+    assert.deepEqual(args, expected);
+    assert.deepEqual(result.calls, []);
+  });
+}
 
 test("installer --force removes both skills before adding and verifying", (t) => {
   const result = runInstaller(t, ["--only", "cursor", "--force"]);
@@ -243,8 +268,25 @@ for (const appData of [undefined, "missing npm directory"]) {
   });
 }
 
-test("Windows dry run resolves npm but never executes it", (t) => {
-  const result = runInstaller(t, ["--only", "codex", "--dry-run"], { platform: "win32", existingPaths: [bundledNpx] });
-  expectSuccess(result);
-  assert.deepEqual(result.calls, []);
-});
+for (const quoted of [false, true]) {
+  test(`Windows installer discovers npm on PATH (${quoted ? "quoted" : "unquoted"} directory)`, (t) => {
+    const directory = temporaryDirectory(t);
+    const npmRoot = join(directory, "npm with spaces");
+    const npxCli = join(npmRoot, "node_modules", "npm", "bin", "npx-cli.js");
+    const path = `${join(directory, "missing")};${quoted ? `"${npmRoot}"` : npmRoot};`;
+    const result = runInstaller(t, ["--only", "codex"], { platform: "win32", path, existingPaths: [npxCli] });
+    expectSuccess(result);
+    assert.deepEqual(result.calls.map((call) => call.args), [[npxCli, ...addArgs(["codex"])], [npxCli, ...listArgs(["codex"])]]);
+    assert.ok(result.calls.every((call) => call.executable === process.execPath));
+  });
+}
+
+for (const flags of [[], ["--force"], ["--uninstall"]]) {
+  test(`Windows dry run works without npm ${flags.join(" ")}`, (t) => {
+    const result = runInstaller(t, ["--only", "codex", "--dry-run", ...flags], { platform: "win32" });
+    expectSuccess(result);
+    assert.match(result.stdout, /> npx -y skills /);
+    assert.deepEqual(result.calls, []);
+    assert.deepEqual(result.probes, []);
+  });
+}
