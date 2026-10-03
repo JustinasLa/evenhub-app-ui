@@ -55,13 +55,20 @@ function expectSuccess(result) {
 }
 
 const agentArgs = (ids) => ids.flatMap((id) => ["--agent", id]);
-const addArgs = (ids) => ["-y", "skills", "add", repoRoot, "--skill", "*", "--global", ...agentArgs(ids), "--copy", "--yes"];
-const removeArgs = (ids) => ["-y", "skills", "remove", "evenhub-app-ui", "evenhub-pixel-icons", "--global", ...agentArgs(ids), "--yes"];
-const listArgs = (ids) => ["-y", "skills", "list", "--global", ...agentArgs(ids)];
+const addArgs = (ids) => ["-y", "skills@1.7.0", "add", repoRoot, "--skill", "*", "--global", ...agentArgs(ids), "--copy", "--yes", "--json"];
+const removeArgs = (ids) => ["-y", "skills@1.7.0", "remove", "evenhub-app-ui", "evenhub-pixel-icons", "--global", ...agentArgs(ids), "--yes"];
+const listArgs = (ids) => ["-y", "skills@1.7.0", "list", "--global", ...agentArgs(ids)];
+const installationOptions = { stdio: ["inherit", "pipe", "inherit"], encoding: "utf8" };
+const removalOptions = { stdio: ["inherit", "pipe", "pipe"], encoding: "utf8" };
+const successfulResults = ["evenhub-app-ui", "evenhub-pixel-icons"].map((name) => ({
+  name,
+  status: "installed",
+  agents: ["Codex"],
+}));
 
 for (const flag of ["--help", "-h"]) {
   test(`installer ${flag} explains every option without invoking commands`, (t) => {
-    const result = runInstaller(t, [flag]);
+    const result = runInstaller(t, [flag], { nodeVersion: "18.20.8" });
     expectSuccess(result);
     for (const option of ["--all", "--dry-run", "--force", "--list", "--uninstall", "--only", "--help"]) {
       assert.ok(result.stdout.includes(option));
@@ -72,7 +79,7 @@ for (const flag of ["--help", "-h"]) {
 }
 
 test("installer lists every supported agent without installing", (t) => {
-  const result = runInstaller(t, ["--list"]);
+  const result = runInstaller(t, ["--list"], { nodeVersion: "18.20.8" });
   expectSuccess(result);
   const lines = result.stdout.trim().split(/\r?\n/);
   assert.equal(lines.length, agents.length);
@@ -216,15 +223,16 @@ for (const platform of ["linux", "win32"]) {
   });
 }
 
-test("installer selects only detected agents and verifies the installed registrations", (t) => {
+test("installer confirms JSON installation results and lists global registrations", (t) => {
   const result = runInstaller(t, [], { commands: ["codex"], agentPaths: [".cline"] });
   expectSuccess(result);
   assert.match(result.stdout, /Installing for: Codex, Cline/);
   assert.match(result.stdout, /Installed evenhub-app-ui and evenhub-pixel-icons\./);
-  assert.match(result.stdout, /Verifying global skill registrations:/);
+  assert.match(result.stdout, /Global skill registrations:/);
+  assert.doesNotMatch(result.stdout, /"status"\s*:/);
   assert.match(result.stdout, /Restart each agent/);
   assert.deepEqual(result.calls, [
-    { executable: "npx", args: addArgs(["codex", "cline"]), options: { stdio: "inherit" } },
+    { executable: "npx", args: addArgs(["codex", "cline"]), options: installationOptions },
     { executable: "npx", args: listArgs(["codex", "cline"]), options: { stdio: "inherit" } },
   ]);
 });
@@ -246,9 +254,9 @@ test("installer --only takes precedence over --all, deduplicates agents, and pre
 test("installer dry run previews addition without invoking npx", (t) => {
   const result = runInstaller(t, ["--only", "codex", "--dry-run"]);
   expectSuccess(result);
-  assert.match(result.stdout, /> npx -y skills add /);
+  assert.match(result.stdout, /> npx -y skills@1\.7\.0 add /);
   assert.match(result.stdout, /Dry run complete; no files were changed\./);
-  assert.doesNotMatch(result.stdout, /Verifying/);
+  assert.doesNotMatch(result.stdout, /Global skill registrations/);
   assert.deepEqual(result.calls, []);
 });
 
@@ -256,7 +264,7 @@ test("installer quotes repository paths containing spaces in previews and passes
   const root = join(temporaryDirectory(t), "repository with spaces");
   const result = runInstaller(t, ["--only", "codex"], { repoRoot: root });
   expectSuccess(result);
-  assert.ok(result.stdout.includes(`> npx -y skills add '${root}' --skill '*'`));
+  assert.ok(result.stdout.includes(`> npx -y skills@1.7.0 add '${root}' --skill '*'`));
   assert.equal(result.calls[0].args[3], root);
 });
 
@@ -284,26 +292,26 @@ for (const [platform, shell, probe, runner] of [
   });
 }
 
-test("installer --force removes both skills before adding and verifying", (t) => {
+test("installer --force removes both skills before adding and listing", (t) => {
   const result = runInstaller(t, ["--only", "cursor", "--force"]);
   expectSuccess(result);
   assert.deepEqual(result.calls.map((call) => call.args), [removeArgs(["cursor"]), addArgs(["cursor"]), listArgs(["cursor"])]);
 });
 
-test("installer --uninstall removes both skills without adding or verifying", (t) => {
+test("installer --uninstall removes both skills without adding or listing", (t) => {
   const result = runInstaller(t, ["--only", "codex", "--uninstall", "--force"]);
   expectSuccess(result);
   assert.match(result.stdout, /Removing from: Codex/);
   assert.deepEqual(result.calls.map((call) => call.args), [removeArgs(["codex"])]);
-  assert.doesNotMatch(result.stdout, /Installed|Restart|Verifying/);
+  assert.doesNotMatch(result.stdout, /Installed|Restart|Global skill registrations/);
 });
 
 for (const flag of ["--force", "--uninstall"]) {
   test(`installer ${flag} --dry-run previews removal without invoking npx`, (t) => {
     const result = runInstaller(t, ["--only", "codex", flag, "--dry-run"]);
     expectSuccess(result);
-    assert.match(result.stdout, /> npx -y skills remove evenhub-app-ui evenhub-pixel-icons /);
-    assert.equal(result.stdout.includes("> npx -y skills add"), flag === "--force");
+    assert.match(result.stdout, /> npx -y skills@1\.7\.0 remove evenhub-app-ui evenhub-pixel-icons /);
+    assert.equal(result.stdout.includes("> npx -y skills@1.7.0 add"), flag === "--force");
     assert.deepEqual(result.calls, []);
   });
 }
@@ -345,12 +353,137 @@ test("installer stops a forced install if removal fails", (t) => {
   assert.match(result.stderr, /skills CLI exited with status 3/);
 });
 
+for (const nodeVersion of ["18.20.8", "22.19.0"]) {
+  for (const args of [["--only", "codex"], ["--only", "codex", "--uninstall"], ["--only", "codex", "--dry-run"]]) {
+    test(`installer rejects Node ${nodeVersion} for ${args.at(-1)}`, (t) => {
+      const result = runInstaller(t, args, { nodeVersion });
+      assert.equal(result.status, 1);
+      assert.equal(result.stderr.trim(), `evenhub-app-ui: Node.js 22.20.0 or newer is required; found ${nodeVersion}.`);
+      assert.deepEqual(result.calls, []);
+      assert.deepEqual(result.probes, []);
+    });
+  }
+}
+
+for (const nodeVersion of ["22.20.0", "24.0.0"]) {
+  test(`installer accepts supported Node ${nodeVersion}`, (t) => {
+    const result = runInstaller(t, ["--only", "codex"], { nodeVersion });
+    expectSuccess(result);
+    assert.match(result.stdout, /Installed evenhub-app-ui and evenhub-pixel-icons\./);
+  });
+}
+
+for (const stdout of ["", "{", "{}", "null"]) {
+  test(`installer rejects invalid installation JSON ${JSON.stringify(stdout)}`, (t) => {
+    const result = runInstaller(t, ["--only", "codex"], { responses: [{ status: 0, stdout }] });
+    assert.equal(result.status, 1);
+    assert.equal(result.stderr.trim(), "evenhub-app-ui: skills CLI returned invalid installation results");
+    assert.equal(result.calls.length, 1);
+    assert.doesNotMatch(result.stdout, /Installed|Restart|Global skill registrations/);
+  });
+}
+
+for (const outcomes of [[], [null], [successfulResults[0]]]) {
+  test(`installer rejects missing successful skill results ${JSON.stringify(outcomes)}`, (t) => {
+    const missing = outcomes.some((outcome) => outcome?.name === "evenhub-app-ui")
+      ? "evenhub-pixel-icons"
+      : "evenhub-app-ui";
+    const result = runInstaller(t, ["--only", "codex"], { responses: [{ stdout: JSON.stringify(outcomes) }] });
+    assert.equal(result.status, 1);
+    assert.equal(result.stderr.trim(), `evenhub-app-ui: failed to install ${missing}: missing successful installation result`);
+    assert.equal(result.calls.length, 1);
+    assert.doesNotMatch(result.stdout, /Installed|Restart/);
+  });
+}
+
+for (const status of [0, 1]) {
+  test(`installer reports partial installation failure even when exit status is ${status}`, (t) => {
+    const stdout = JSON.stringify([successfulResults[0], {
+      name: "evenhub-pixel-icons", status: "failed", error: "ENOTDIR: target is a file",
+    }]);
+    const result = runInstaller(t, ["--only", "codex"], { responses: [{ status, stdout }] });
+    assert.equal(result.status, 1);
+    assert.equal(result.stderr.trim(), "evenhub-app-ui: failed to install evenhub-pixel-icons: ENOTDIR: target is a file");
+    assert.equal(result.calls.length, 1);
+    assert.doesNotMatch(result.stdout, /Installed|Restart/);
+  });
+}
+
+test("installer rejects a failed skill result without a diagnostic", (t) => {
+  const stdout = JSON.stringify([{ name: "evenhub-app-ui", status: "failed" }]);
+  const result = runInstaller(t, ["--only", "codex"], { responses: [{ stdout }] });
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /failed to install evenhub-app-ui: missing successful installation result/);
+  assert.equal(result.calls.length, 1);
+});
+
+for (const agents of [undefined, "Codex", ["Claude Code"]]) {
+  test(`installer requires each selected agent in installation results ${JSON.stringify(agents)}`, (t) => {
+    const stdout = JSON.stringify([{ ...successfulResults[0], agents }, successfulResults[1]]);
+    const result = runInstaller(t, ["--only", "codex"], { responses: [{ stdout }] });
+    assert.equal(result.status, 1);
+    assert.equal(result.stderr.trim(), "evenhub-app-ui: failed to install evenhub-app-ui for: Codex");
+    assert.equal(result.calls.length, 1);
+    assert.doesNotMatch(result.stdout, /Installed|Restart/);
+  });
+}
+
+test("installer requires confirmation for every selected agent on both skills", (t) => {
+  const stdout = JSON.stringify([
+    { ...successfulResults[0], agents: ["Codex", "Claude Code"] },
+    successfulResults[1],
+  ]);
+  const result = runInstaller(t, ["--only", "codex", "--only", "claude-code"], { responses: [{ stdout }] });
+  assert.equal(result.status, 1);
+  assert.equal(result.stderr.trim(), "evenhub-app-ui: failed to install evenhub-pixel-icons for: Claude Code");
+  assert.equal(result.calls.length, 1);
+});
+
+test("installer reports a failed child process when installation JSON is absent", (t) => {
+  const result = runInstaller(t, ["--only", "codex"], { responses: [{ status: 7, stdout: "" }] });
+  assert.equal(result.status, 1);
+  assert.equal(result.stderr.trim(), "evenhub-app-ui: skills CLI exited with status 7");
+  assert.equal(result.calls.length, 1);
+});
+
+for (const flag of ["--uninstall", "--force"]) {
+  for (const [stream, diagnostic] of [
+    ["stdout", "\u001b[31mCould not remove skill from Codex: EBUSY: resource locked\u001b[0m\n"],
+    ["stderr", "\u001b[31mFailed to remove existing skill: permission denied\u001b[0m\n"],
+  ]) {
+    test(`installer ${flag} rejects a ${stream} removal failure despite exit status zero`, (t) => {
+      const result = runInstaller(t, ["--only", "codex", flag], { responses: [{ status: 0, [stream]: diagnostic }] });
+      assert.equal(result.status, 1);
+      assert.match(result.stderr, /evenhub-app-ui: (Could not remove skill from Codex: EBUSY|Failed to remove existing skill: permission denied)/);
+      assert.deepEqual(result.calls, [{ executable: "npx", args: removeArgs(["codex"]), options: removalOptions }]);
+      assert.doesNotMatch(result.stdout, /Installed|Restart|Global skill registrations/);
+    });
+  }
+}
+
+test("installer accepts already-absent skills and preserves normal removal output", (t) => {
+  const stdout = "No skills found in global scope.\n";
+  const stderr = "Nothing to remove.\n";
+  const result = runInstaller(t, ["--only", "codex", "--uninstall"], { responses: [{ status: 0, stdout, stderr }] });
+  assert.equal(result.status, 0);
+  assert.ok(result.stdout.endsWith(stdout));
+  assert.equal(result.stderr, stderr);
+  assert.equal(result.calls.length, 1);
+});
+
+test("installer propagates removal subprocess errors", (t) => {
+  const result = runInstaller(t, ["--only", "codex", "--force"], { responses: [{ error: "spawn ENOENT" }] });
+  assert.equal(result.status, 1);
+  assert.equal(result.stderr.trim(), "evenhub-app-ui: spawn ENOENT");
+  assert.equal(result.calls.length, 1);
+});
+
 const bundledNpx = join(dirname(process.execPath), "node_modules", "npm", "bin", "npx-cli.js");
 test("Windows installer invokes the bundled npx CLI through Node", (t) => {
   const result = runInstaller(t, ["--only", "codex"], { platform: "win32", existingPaths: [bundledNpx] });
   expectSuccess(result);
   assert.deepEqual(result.calls, [
-    { executable: process.execPath, args: [bundledNpx, ...addArgs(["codex"])], options: { stdio: "inherit" } },
+    { executable: process.execPath, args: [bundledNpx, ...addArgs(["codex"])], options: installationOptions },
     { executable: process.execPath, args: [bundledNpx, ...listArgs(["codex"])], options: { stdio: "inherit" } },
   ]);
 });
@@ -397,7 +530,7 @@ for (const flags of [[], ["--force"], ["--uninstall"]]) {
   test(`Windows dry run works without npm ${flags.join(" ")}`, (t) => {
     const result = runInstaller(t, ["--only", "codex", "--dry-run", ...flags], { platform: "win32" });
     expectSuccess(result);
-    assert.match(result.stdout, /> npx -y skills /);
+    assert.match(result.stdout, /> npx -y skills@1\.7\.0 /);
     assert.deepEqual(result.calls, []);
     assert.deepEqual(result.probes, []);
   });

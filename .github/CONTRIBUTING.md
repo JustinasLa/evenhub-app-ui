@@ -6,7 +6,7 @@ guide walks you through making a change.
 
 ## Prerequisites
 
-- [Node.js 18+](https://nodejs.org) (provides `node` and `npm`) — only needed for the
+- [Node.js 22.20.0+](https://nodejs.org) (provides `node` and `npm`) — only needed for the
   installer and the icon converter; the skills themselves are plain Markdown and SVG.
 
 

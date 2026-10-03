@@ -52,7 +52,7 @@ Distilled from the public Figma file **"Even Realities – Software Design Guide
 
 ### One command — all detected agents
 
-Requires Node.js 18 or newer. The installer detects supported agents, installs
+Requires Node.js 22.20.0 or newer. The installer detects supported agents, installs
 both skills globally, and skips agents that are not present. Safe to re-run.
 
 ```bash

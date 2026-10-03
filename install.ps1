@@ -6,13 +6,14 @@ function Install-EvenHubAppUI {
     $node = Get-Command node -ErrorAction SilentlyContinue
 
     if (-not $node) {
-        Write-Error "evenhub-app-ui: Node.js 18 or newer is required."
+        Write-Error "evenhub-app-ui: Node.js 22.20.0 or newer is required."
         return
     }
 
-    $nodeMajor = [int](& node -p "process.versions.node.split('.')[0]")
-    if ($nodeMajor -lt 18) {
-        Write-Error "evenhub-app-ui: Node.js 18 or newer is required; found $nodeMajor."
+    $nodeVersion = & node -p "process.versions.node"
+    $versionParts = $nodeVersion.Split('.')
+    if ([int]$versionParts[0] -lt 22 -or ([int]$versionParts[0] -eq 22 -and [int]$versionParts[1] -lt 20)) {
+        Write-Error "evenhub-app-ui: Node.js 22.20.0 or newer is required; found $nodeVersion."
         return
     }
 

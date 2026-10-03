@@ -8,6 +8,7 @@ const url = require("node:url");
 const config = JSON.parse(process.env.EVENHUB_INSTALL_TEST);
 
 Object.defineProperty(process, "platform", { value: config.platform });
+if (config.nodeVersion) Object.defineProperty(process.versions, "node", { value: config.nodeVersion });
 os.homedir = () => config.home;
 for (const name of ["CODEX_HOME", "CLAUDE_CONFIG_DIR", "XDG_CONFIG_HOME"]) {
   if (config.agentEnv?.[name] !== undefined) process.env[name] = config.agentEnv[name];
@@ -28,7 +29,14 @@ childProcess.spawnSync = (executable, args, options) => {
     return { status: config.commands.includes(command) ? 0 : 1 };
   }
   fs.appendFileSync(config.callsFile, JSON.stringify({ executable, args, options }) + "\n");
-  const response = config.responses[invocation++] ?? { status: 0 };
+  const defaultResponse = args.includes("--json")
+    ? { status: 0, stdout: JSON.stringify(["evenhub-app-ui", "evenhub-pixel-icons"].map((name) => ({
+      name,
+      status: "installed",
+      agents: ["Claude Code", "Codex", "Cursor", "Windsurf", "Cline", "Gemini CLI", "OpenCode", "GitHub Copilot", "Continue", "Roo Code", "Kilo Code", "AiderDesk", "Amp", "OpenClaw", "Goose", "Crush"],
+    }))) }
+    : { status: 0 };
+  const response = { ...defaultResponse, ...config.responses[invocation++] };
   return response.error ? { error: new Error(response.error), status: null } : response;
 };
 

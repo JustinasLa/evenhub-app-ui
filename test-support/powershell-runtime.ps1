@@ -33,9 +33,9 @@ function global:Test-Path {
 
 function global:node {
     if ($args[0] -eq "-p") {
-        if ($args[1] -ne "process.versions.node.split('.')[0]") { throw "unexpected version probe" }
+        if ($args[1] -ne "process.versions.node") { throw "unexpected version probe" }
         $global:LASTEXITCODE = 0
-        return $global:EvenHubWrapperTest.major
+        return $global:EvenHubWrapperTest.version
     }
     Write-TestInvocation -Command "node" -Arguments $args
     $global:LASTEXITCODE = $global:EvenHubWrapperTest.status
