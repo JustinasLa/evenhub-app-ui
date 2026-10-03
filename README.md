@@ -27,7 +27,7 @@
 
 A skill/plugin for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and [Codex](https://developers.openai.com/codex/). Install once — from then on, whenever you design or build UI for the Even Hub companion app, your agent stops guessing hex values and inventing icons. It applies the **official design guidelines**: exact tokens, FK Grotesk Neue typography, the 12/16/6 layout rhythm, and real pixel-grid icon construction rules.
 
-Distilled from the public Figma file **"Even Realities – Software Design Guidelines"** (UIUX Design Guidelines 2025), APP Guidelines page.
+Distilled from the public Figma file [**"Even Realities – Software Design Guidelines"**](https://www.figma.com/design/X82y5uJvqMH95jgOfmV34j/Even-Realities---Software-Design-Guidelines--Public-?node-id=2922-80782) (UIUX Design Guidelines 2025), APP Guidelines page.
 
 ```
 ┌──────────────────────────────────────────────┐
@@ -57,17 +57,28 @@ both skills globally, and skips agents that are not present. Safe to re-run.
 
 ```bash
 # macOS · Linux · WSL · Git Bash
-curl -fsSL https://raw.githubusercontent.com/JustinasLa/evenhub-app-ui/master/install.sh | bash
+bash -o pipefail -c 'curl -fsSL https://raw.githubusercontent.com/JustinasLa/evenhub-app-ui/master/install.sh | bash -s --'
 ```
 
 ```powershell
 # Windows · PowerShell 5.1+
-irm https://raw.githubusercontent.com/JustinasLa/evenhub-app-ui/master/install.ps1 | iex
+irm https://raw.githubusercontent.com/JustinasLa/evenhub-app-ui/master/install.ps1 -ErrorAction Stop | iex
 ```
 
 Preview first with `--dry-run`, inspect detection with `--list`, or target one
 agent with `--only codex` or `--only claude-code`. Use `--force` to replace
 existing copies and `--uninstall` to remove both skills.
+
+To preview a downloaded installation:
+
+```bash
+bash -o pipefail -c 'curl -fsSL https://raw.githubusercontent.com/JustinasLa/evenhub-app-ui/master/install.sh | bash -s -- --dry-run'
+```
+
+```powershell
+$installer = irm https://raw.githubusercontent.com/JustinasLa/evenhub-app-ui/master/install.ps1 -ErrorAction Stop
+& ([scriptblock]::Create($installer)) --dry-run
+```
 
 ### Claude Code
 
@@ -86,17 +97,18 @@ Then `/reload-plugins` (or restart Claude Code). Safe to re-run.
 
 <br>
 
-Copy the skill folder into a skills directory:
+From a local checkout, copy both skills into your personal skills directory:
 
 ```bash
-# personal (all projects)
-~/.claude/skills/evenhub-app-ui/
-
-# or per-project
-<your-project>/.claude/skills/evenhub-app-ui/
+mkdir -p ~/.claude/skills/evenhub-app-ui ~/.claude/skills/evenhub-pixel-icons
+cp -R skills/evenhub-app-ui/. ~/.claude/skills/evenhub-app-ui/
+cp -R skills/evenhub-pixel-icons/. ~/.claude/skills/evenhub-pixel-icons/
 ```
 
-Copy the whole folder [`skills/evenhub-app-ui/`](skills/evenhub-app-ui/) — SKILL.md plus `references/` and `assets/icons/` — so the icon paths keep working.
+For a project-scoped install, use `<your-project>/.claude/skills` instead of
+`~/.claude/skills`. Keep the whole [`skills/evenhub-app-ui/`](skills/evenhub-app-ui/)
+and [`skills/evenhub-pixel-icons/`](skills/evenhub-pixel-icons/) folders so their
+references, icon assets, and generator paths keep working.
 
 </details>
 
@@ -116,7 +128,12 @@ personal or repository marketplace, restart Codex, then install it from
 
 ## Usage
 
-No command needed — the skill triggers whenever the conversation involves Even Realities / G2 / Even Hub app design or implementation. Explicit invoke: `/evenhub-app-ui`.
+No command needed — the skill triggers whenever the conversation involves Even Realities / G2 / Even Hub app design or implementation. To invoke either skill explicitly in Claude Code:
+
+| Installation | Commands |
+|---|---|
+| Plugin marketplace | `/evenhub-app-ui:evenhub-app-ui`, `/evenhub-app-ui:evenhub-pixel-icons` |
+| Global installer or manual copy | `/evenhub-app-ui`, `/evenhub-pixel-icons` |
 
 | You say | Skill makes sure |
 |---|---|
